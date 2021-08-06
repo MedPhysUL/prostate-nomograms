@@ -3,7 +3,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 import time
 import os
-from root import ROOT
+from prostate_cancer_nomograms.root import ROOT
 
 chrome_options = Options()
 # chrome_options.add_argument("--headless")

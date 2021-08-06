@@ -1,3 +1,24 @@
+import numpy as np
+from prostate_cancer_nomograms.MSKCC.web_table_scraper import WebTableScraper
+
+url = "https://www.mskcc.org/nomograms/prostate/post_op/coefficients"
+
+variables_coefficients_table_scraper = WebTableScraper(
+    url=url,
+    json_folder_path="models_coefficients",
+    variables_coefficients=True
+)
+variables_dataframe = variables_coefficients_table_scraper.dataframe
+
+spline_coefficients_table_scraper = WebTableScraper(
+    url=url,
+    json_folder_path="models_coefficients",
+    spline_coefficients=True
+)
+spline_dataframe = spline_coefficients_table_scraper.dataframe
+
+variables_dataframe = variables_dataframe[variables_dataframe["Model"] == "Postoperative BCR"]
+
 intercept = 6.06544681
 patient_age = 0.00217305
 preoperative_PSA = -0.30855258
@@ -101,7 +122,6 @@ def prob(
         psa_value, age, primary_gleason, secondary_gleason, surgical_margins, extracapsular,
         seminal_vesicles, pelvic_lymph_nodes
     )
-    import numpy as np
     num = 1 + (np.exp(-xb)*time)**(1/scaling_Parameter)
     denum = 1 + (np.exp(-xb)*study_time)**(1/scaling_Parameter)
 
