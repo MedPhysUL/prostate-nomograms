@@ -30,6 +30,12 @@ class BaseModel:
         return variables_dataframe
 
     @property
+    def model_type(self):
+        model_type = self.variables_dataframe["Model Type"].values[0]
+
+        return model_type
+
+    @property
     def spline_dataframe(self):
         spline_coefficients_table_scraper = WebTableScraper(
             url=self.url,

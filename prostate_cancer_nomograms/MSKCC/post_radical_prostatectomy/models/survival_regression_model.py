@@ -20,14 +20,17 @@ class SurvivalRegressionModel(BaseSurvivalRegressionModel):
 
     @property
     def gleason_value(self) -> np.ndarray:
-        primary_gleason = np.array(self.patients_dataframe["Primary Gleason"])
-        secondary_gleason = np.array(self.patients_dataframe["Secondary Gleason"])
+        primary_gleason = np.array(self.patients_information["Primary Gleason"])
+        secondary_gleason = np.array(self.patients_information["Secondary Gleason"])
         total_gleason_score = primary_gleason + secondary_gleason
 
         gleason_value = np.zeros_like(total_gleason_score, dtype=float)
 
-        gleason_value[total_gleason_score == 6] = self.variables_values["Pathologic Gleason Grade Group 2"]
-        gleason_value[total_gleason_score == 7] = self.variables_values["Pathologic Gleason Grade Group 3"]
+        mask_grade_2 = np.where(((primary_gleason == 3) & (secondary_gleason == 4)), True, False)
+        mask_grade_3 = np.where(((primary_gleason == 4) & (secondary_gleason == 3)), True, False)
+
+        gleason_value[mask_grade_2] = self.variables_values["Pathologic Gleason Grade Group 2"]
+        gleason_value[mask_grade_3] = self.variables_values["Pathologic Gleason Grade Group 3"]
         gleason_value[total_gleason_score == 8] = self.variables_values["Pathologic Gleason Grade Group 4"]
         gleason_value[total_gleason_score == 9] = self.variables_values["Pathologic Gleason Grade Group 5"]
         gleason_value[total_gleason_score == 10] = self.variables_values["Pathologic Gleason Grade Group 5"]

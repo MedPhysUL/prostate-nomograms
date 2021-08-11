@@ -85,6 +85,9 @@ class WebTableScraper:
             return False
 
     def create_dataframe(self):
+        if not os.path.exists(self.json_folder_path):
+            os.makedirs(self.json_folder_path)
+
         tables = pd.read_html(self.url_content)
         dataframe = tables[self.dataframe_kind.table_index]
 
