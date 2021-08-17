@@ -61,7 +61,7 @@ class CAPRA:
 
     @property
     def positive_cores_score(self) -> np.ndarray:
-        positive_cores_percentage = np.array(self.patients_information["% cores POS"])
+        positive_cores_percentage = np.array(self.patients_information["% cores POS"], dtype=float)
 
         positive_cores_score = np.zeros_like(positive_cores_percentage, dtype=float)
         positive_cores_score[positive_cores_percentage >= 34] = 1
