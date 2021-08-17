@@ -1,4 +1,0 @@
-,Patient,Age,PSA,Primary Gleason,Secondary Gleason,Clinical Tumor Stage,Number of Positive Cores,Number of Negative Cores,Surgical Margin Status,Extracapsular Extension,Seminal Vesicle Invasion,Lymph Node Involvement,Free Months,Postoperative BCR_5_years,Preoperative BCR (Cores)_5_years
-0,1,45,2,4,5,T2a,2,2,False,True,False,True,8,0.4202342613516755,0.6721377484140278
-1,2,60,10,3,4,T2c,5,5,True,False,True,True,20,0.6049654579542996,0.6899362307682673
-2,3,75,50,5,5,T3c,10,5,True,True,False,False,40,0.7003044344425517,0.03860357032221897

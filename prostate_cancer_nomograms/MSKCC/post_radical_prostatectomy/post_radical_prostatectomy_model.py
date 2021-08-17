@@ -30,7 +30,7 @@ class PostRadicalProstatectomyModel(BaseModel):
     def json_folder_path(self):
         return os.path.join(os.path.dirname(__file__), "models_coefficients")
 
-    def get_predictions(self, number_of_years: Union[np.ndarray, list, float, int]):
+    def get_predictions(self, number_of_years: Union[float, int]):
         if self.model_type == "survival":
             survival_regression_model = SurvivalRegressionModel(
                 patients_dataframe=self.patients_dataframe,

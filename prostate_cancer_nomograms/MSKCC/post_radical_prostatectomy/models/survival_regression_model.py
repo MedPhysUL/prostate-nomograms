@@ -58,11 +58,11 @@ class SurvivalRegressionModel(BaseSurvivalRegressionModel):
 
         return result
 
-    def get_predicted_survival_probability(self, number_of_years: Union[np.ndarray, list, float, int]):
+    def get_predicted_survival_probability(self, number_of_years: Union[float, int]):
         predicted_result = self.predicted_result
         scaling_parameter = self.variables_values["Scaling Parameter"]
 
         num = 1 + (np.exp(-predicted_result) * self.patients_information["Free Months"]/12) ** (1 / scaling_parameter)
-        denum = 1 + (np.exp(-predicted_result) * np.array(number_of_years)) ** (1 / scaling_parameter)
+        denum = 1 + (np.exp(-predicted_result) * number_of_years) ** (1 / scaling_parameter)
 
         return num/denum

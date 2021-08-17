@@ -27,8 +27,8 @@ class LogisticRegressionModel(BaseLogisticRegressionModel):
 
     @property
     def gleason_value(self) -> np.ndarray:
-        primary_gleason = np.array(self.patients_dataframe["Primary Gleason"])
-        secondary_gleason = np.array(self.patients_dataframe["Secondary Gleason"])
+        primary_gleason = np.array(self.patients_information["Gleason primaire Bx"])
+        secondary_gleason = np.array(self.patients_information["Gleason secondaire Bx"])
         total_gleason_score = primary_gleason + secondary_gleason
 
         gleason_value = np.zeros_like(total_gleason_score, dtype=float)
@@ -45,33 +45,33 @@ class LogisticRegressionModel(BaseLogisticRegressionModel):
 
     @property
     def clinical_stage_value(self):
-        clinical_tumor_stage = self.patients_information["Clinical Tumor Stage"]
+        clinical_tumor_stage = self.patients_information["Stade clinique"]
 
         clinical_stage_value = np.zeros_like(clinical_tumor_stage, dtype=float)
-        clinical_stage_value[list(map("T2a".__eq__, clinical_tumor_stage))] = self.variables_values["Clinical Stage 2A"]
-        clinical_stage_value[list(map("T2b".__eq__, clinical_tumor_stage))] = self.variables_values["Clinical Stage 2B"]
-        clinical_stage_value[list(map("T2c".__eq__, clinical_tumor_stage))] = self.variables_values["Clinical Stage 2C"]
-        clinical_stage_value[list(map("T3a".__eq__, clinical_tumor_stage))] = self.variables_values["Clinical Stage 3+"]
-        clinical_stage_value[list(map("T3b".__eq__, clinical_tumor_stage))] = self.variables_values["Clinical Stage 3+"]
-        clinical_stage_value[list(map("T3c".__eq__, clinical_tumor_stage))] = self.variables_values["Clinical Stage 3+"]
+        clinical_stage_value[list(map("cT2a".__eq__, clinical_tumor_stage))] = self.variables_values["Clinical Stage 2A"]
+        clinical_stage_value[list(map("cT2b".__eq__, clinical_tumor_stage))] = self.variables_values["Clinical Stage 2B"]
+        clinical_stage_value[list(map("cT2c".__eq__, clinical_tumor_stage))] = self.variables_values["Clinical Stage 2C"]
+        clinical_stage_value[list(map("cT3a".__eq__, clinical_tumor_stage))] = self.variables_values["Clinical Stage 3+"]
+        clinical_stage_value[list(map("cT3b".__eq__, clinical_tumor_stage))] = self.variables_values["Clinical Stage 3+"]
+        clinical_stage_value[list(map("cT3c".__eq__, clinical_tumor_stage))] = self.variables_values["Clinical Stage 3+"]
 
         return clinical_stage_value
 
     @property
     def positive_cores_value(self):
-        return np.array(self.patients_information["Number of Positive Cores"])*self.variables_values["No. of Positive Cores"]
+        return np.array(self.patients_information["NbCtePositive"])*self.variables_values["No. of Positive Cores"]
 
     @property
     def negative_cores_value(self):
-        return np.array(self.patients_information["Number of Negative Cores"])*self.variables_values["No. of Negative Cores"]
+        return np.array(self.patients_information["NbCteNegative"])*self.variables_values["No. of Negative Cores"]
 
     @property
     def predicted_result(self):
         result = self.variables_values["Intercept"]
-        result += np.array(self.patients_information["PSA"]) * self.variables_values["Preoperative PSA"]
+        result += np.array(self.patients_information["Diag_PSA"]) * self.variables_values["Preoperative PSA"]
         result += self.spline_term_1 * self.variables_values["Preoperative PSA Spline 1"]
         result += self.spline_term_2 * self.variables_values["Preoperative PSA Spline 2"]
-        result += np.array(self.patients_information["Age"]) * self.variables_values["Patient Age"]
+        result += np.array(self.patients_information["âge au dx"]) * self.variables_values["Patient Age"]
         result += self.gleason_value
         result += self.clinical_stage_value
 
