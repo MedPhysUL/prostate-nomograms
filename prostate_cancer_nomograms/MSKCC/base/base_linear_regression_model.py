@@ -49,7 +49,7 @@ class BaseLinearRegressionModel:
 
     @property
     def spline_term_1(self) -> np.ndarray:
-        psa = np.array(self.patients_information["Diag_PSA"])
+        psa = np.array(self.patients_information["PSA au diagnostique"])
         knot1 = self.spline_knots_values["PSAPreopKnot1"]
         knot3 = self.spline_knots_values["PSAPreopKnot3"]
         knot4 = self.spline_knots_values["PSAPreopKnot4"]
@@ -62,7 +62,7 @@ class BaseLinearRegressionModel:
 
     @property
     def spline_term_2(self) -> np.ndarray:
-        psa = np.array(self.patients_dataframe["Diag_PSA"])
+        psa = np.array(self.patients_dataframe["PSA au diagnostique"])
         knot2 = self.spline_knots_values["PSAPreopKnot2"]
         knot3 = self.spline_knots_values["PSAPreopKnot3"]
         knot4 = self.spline_knots_values["PSAPreopKnot4"]

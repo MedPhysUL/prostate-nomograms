@@ -14,7 +14,7 @@ class CAPRA:
 
     @property
     def age_score(self) -> np.ndarray:
-        age = np.array(self.patients_information["âge au dx"])
+        age = np.array(self.patients_information["Âge au diagnostique"])
         age_score = np.zeros_like(age, dtype=float)
 
         age_score[age < 50] = 0
@@ -24,7 +24,7 @@ class CAPRA:
 
     @property
     def psa_score(self) -> np.ndarray:
-        psa = np.array(self.patients_information["Diag_PSA"])
+        psa = np.array(self.patients_information["PSA au diagnostique"])
         psa_score = np.zeros_like(psa, dtype=float)
 
         psa_score[psa < 6] = 0
@@ -37,8 +37,8 @@ class CAPRA:
 
     @property
     def gleason_score(self) -> np.ndarray:
-        primary_gleason = np.array(self.patients_information["Gleason primaire Bx"])
-        secondary_gleason = np.array(self.patients_information["Gleason secondaire Bx"])
+        primary_gleason = np.array(self.patients_information["Gleason primaire biopsie"])
+        secondary_gleason = np.array(self.patients_information["Gleason secondaire biopsie"])
         total_gleason_score = primary_gleason + secondary_gleason
 
         gleason_score = np.zeros_like(total_gleason_score, dtype=float)
@@ -50,12 +50,10 @@ class CAPRA:
 
     @property
     def clinical_stage_score(self) -> np.ndarray:
-        clinical_tumor_stage = self.patients_information["Stade clinique"]
+        clinical_tumor_stage = self.patients_information["Stade clinique style_CAPRA"]
 
         clinical_stage_score = np.zeros_like(clinical_tumor_stage, dtype=float)
-        clinical_stage_score[list(map("cT3a".__eq__, clinical_tumor_stage))] = 1
-        clinical_stage_score[list(map("cT3b".__eq__, clinical_tumor_stage))] = 1
-        clinical_stage_score[list(map("cT3c".__eq__, clinical_tumor_stage))] = 1
+        clinical_stage_score[list(map("T3a".__eq__, clinical_tumor_stage))] = 1
 
         return clinical_stage_score
 
