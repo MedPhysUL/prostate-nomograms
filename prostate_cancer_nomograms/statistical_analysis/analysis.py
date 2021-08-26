@@ -19,7 +19,11 @@ list_of_columns = [
     "Dernière PSA",
     "pN"
 ]
-descriptive_statistics.get_descriptive_stats_dataframe_from_given_columns(list_of_columns=list_of_columns)
+descriptive_stats_table = descriptive_statistics.get_descriptive_stats_dataframe_from_given_columns(
+    list_of_columns=list_of_columns
+)
+print(descriptive_stats_table.to_latex(index=True))
+
 list_of_columns = [
     "Stade clinique",
     "Gleason global biopsie",
@@ -29,7 +33,12 @@ list_of_columns = [
     "Récurrence 5 ans (60 mois), oui = 1; non =0",
     "Récurrence 10 ans (120 mois), oui = 1; non =0",
 ]
-descriptive_statistics.print_frequency_table(list_of_columns=list_of_columns)
+frequency_table = descriptive_statistics.get_frequency_table(list_of_columns=list_of_columns)
+print(frequency_table.to_latex(index=False))
+
+proportions_freq = descriptive_statistics.get_frequency_table_and_test_on_proportions(list_of_columns=list_of_columns)
+print(proportions_freq.to_latex(index=False))
+
 descriptive_statistics.print_pN0_frequency_table(list_of_columns=list_of_columns)
 descriptive_statistics.print_pN1_frequency_table(list_of_columns=list_of_columns)
 descriptive_statistics.pN_frequency_table(column_name="Gleason global biopsie")
