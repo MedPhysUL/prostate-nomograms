@@ -8,7 +8,7 @@ dataset_loader = DatasetLoader(path_to_dataset=os.path.join(PATH_TO_DATA_FOLDER,
 dataset = dataset_loader.dataset
 
 
-descriptive_statistics = DescriptiveStatistics(dataset=dataset)
+descriptive_statistics = DescriptiveStatistics(dataframe=dataset)
 list_of_columns = [
     "Âge au diagnostique",
     "PSA au diagnostique",
@@ -36,11 +36,22 @@ list_of_columns = [
 frequency_table = descriptive_statistics.get_frequency_table(list_of_columns=list_of_columns)
 print(frequency_table.to_latex(index=False))
 
-proportions_freq = descriptive_statistics.get_frequency_table_and_test_on_proportions(list_of_columns=list_of_columns)
+proportions_freq = descriptive_statistics.get_frequency_table_and_test_on_proportions(list_of_columns=list_of_columns, outcome="LYMPH_NODE")
 print(proportions_freq.to_latex(index=False))
 
-descriptive_statistics.print_pN0_frequency_table(list_of_columns=list_of_columns)
-descriptive_statistics.print_pN1_frequency_table(list_of_columns=list_of_columns)
-descriptive_statistics.pN_frequency_table(column_name="Gleason global biopsie")
-descriptive_statistics.chi2_test_on_frequency_table(column_name="Gleason global biopsie")
-descriptive_statistics.mannwhitneyu_test(column_name="Âge au diagnostique")
+list_of_columns = [
+    "Âge au diagnostique",
+    "PSA au diagnostique",
+    "% cores POS",
+    "% cores NEG",
+    "PSA_valeur de récidive",
+    "Durée de suivi (mois)",
+    "Dernière PSA",
+    "pN"
+]
+descriptive_table_pn = descriptive_statistics.get_descriptive_stats_dataframe_from_pn(
+    list_of_columns=list_of_columns,
+    outcome="LYMPH_NODE"
+)
+
+print(descriptive_table_pn.to_latex(index=False))
