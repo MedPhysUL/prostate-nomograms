@@ -1,26 +1,10 @@
-import enum
+from typing import NamedTuple
 
 import numpy as np
 import pandas as pd
 from scipy import stats
-from typing import NamedTuple
 
-
-class OutcomeDataFrameInformation(NamedTuple):
-    column_name_in_dataframe: str
-    value_of_negative_outcome: str
-    value_of_positive_outcome: str
-
-
-LYMPH_NODE_INFO = OutcomeDataFrameInformation(
-    column_name_in_dataframe="pN",
-    value_of_negative_outcome="pN0",
-    value_of_positive_outcome="pN1"
-)
-
-
-class Outcomes(enum.Enum):
-    LYMPH_NODE = LYMPH_NODE_INFO
+from .outcomes import Outcomes
 
 
 class DescriptiveStatistics:
@@ -62,8 +46,36 @@ class DescriptiveStatistics:
 
         return outcome_specific_dataframes
 
-    def get_dataframe_with_strings_converted_to_nan_in_given_column(
-            self,
+    @property
+    def negative_outcome_dataframe(self):
+        return self.outcome_specific_dataframes.negative_outcome_dataframe
+
+    @property
+    def positive_outcome_dataframe(self):
+        return self.outcome_specific_dataframes.positive_outcome_dataframe
+
+    def get_descriptive_stats_dataframe_from_given_columns(self, list_of_columns: list) -> pd.DataFrame:
+        reduced_dataset = self.dataframe[list_of_columns]
+        descriptive_stats_dataframe = reduced_dataset.describe().transpose().round(decimals=1)
+        descriptive_stats_dataframe.insert(loc=0, column="Variable", value=descriptive_stats_dataframe.index)
+
+        return descriptive_stats_dataframe
+
+    @staticmethod
+    def _get_p_value_from_mann_whitney_u_test(
+            column_name: str,
+            negative_outcome_dataframe: pd.DataFrame,
+            positive_outcome_dataframe: pd.DataFrame
+    ):
+        _, p_value = stats.mannwhitneyu(
+            x=negative_outcome_dataframe[column_name].dropna(),
+            y=positive_outcome_dataframe[column_name].dropna()
+        )
+
+        return p_value
+
+    @staticmethod
+    def _get_dataframe_with_strings_converted_to_numbers_in_given_column(
             column_name: str,
             dataframe: pd.DataFrame
     ):
@@ -84,138 +96,31 @@ class DescriptiveStatistics:
 
         return dataframe
 
-    def get_dataframes_subset_from_given_columns(self, list_of_columns: list, outcome: str):
+    def _get_dataframes_subset_from_given_columns(self, list_of_columns: list, outcome: str):
         self.outcome = outcome
 
-        negative_outcome_dataframe = self.outcome_specific_dataframes.negative_outcome_dataframe[list_of_columns]
-        positive_outcome_dataframe = self.outcome_specific_dataframes.positive_outcome_dataframe[list_of_columns]
+        negative_outcome_dataframe_subset = self.outcome_specific_dataframes.negative_outcome_dataframe[list_of_columns]
+        positive_outcome_dataframe_subset = self.outcome_specific_dataframes.positive_outcome_dataframe[list_of_columns]
 
         for column in list_of_columns:
-            negative_outcome_dataframe = self.get_dataframe_with_strings_converted_to_nan_in_given_column(
+            negative_outcome_dataframe_subset = self._get_dataframe_with_strings_converted_to_numbers_in_given_column(
                 column_name=column,
-                dataframe=negative_outcome_dataframe
+                dataframe=negative_outcome_dataframe_subset
             )
-            positive_outcome_dataframe = self.get_dataframe_with_strings_converted_to_nan_in_given_column(
+            positive_outcome_dataframe_subset = self._get_dataframe_with_strings_converted_to_numbers_in_given_column(
                 column_name=column,
-                dataframe=positive_outcome_dataframe
+                dataframe=positive_outcome_dataframe_subset
             )
 
         outcome_specific_dataframes = self.OutcomeDataFrames(
-            negative_outcome_dataframe=negative_outcome_dataframe,
-            positive_outcome_dataframe=positive_outcome_dataframe,
+            negative_outcome_dataframe=negative_outcome_dataframe_subset,
+            positive_outcome_dataframe=positive_outcome_dataframe_subset,
         )
 
         return outcome_specific_dataframes
 
-    def get_descriptive_stats_dataframe_from_given_columns(self, list_of_columns: list) -> pd.DataFrame:
-        reduced_dataset = self.dataframe[list_of_columns]
-        descriptive_stats_dataframe = reduced_dataset.describe().transpose().round(decimals=1)
-
-        return descriptive_stats_dataframe
-
-    def get_frequency_table(self, list_of_columns: list):
-        dataframe = pd.DataFrame(columns=["Variable", "Level", "n", "%"])
-
-        number_of_levels = 0
-        for variable_idx, variable_name in enumerate(list_of_columns):
-            value_counts: pd.Series = self.dataframe[variable_name].value_counts()
-            ratio_counts: pd.Series = self.dataframe[variable_name].value_counts(normalize=True)
-
-            levels = list(value_counts.index)
-            counts = value_counts.to_list()
-            percentage_counts = round(ratio_counts*100, ndigits=1).to_list()
-
-            dataframe.loc[number_of_levels] = [variable_name, levels[0], counts[0], percentage_counts[0]]
-            for relative_level_idx, (level, count, percent) in enumerate(
-                    zip(levels[1:], counts[1:], percentage_counts[1:]),
-                    start=1
-            ):
-                true_level_idx = relative_level_idx + number_of_levels
-                dataframe.loc[true_level_idx] = ["", level, count, percent]
-
-            number_of_levels += len(levels)
-
-        return dataframe
-
-    def get_frequency_table_and_test_on_proportions(self, list_of_columns: list, outcome: str):
-        dataframe = pd.DataFrame(columns=["Variable", "Level", "n/N", "%", "n/N", "%", "p-value"])
-        self.outcome = outcome
-
-        negative_outcome_dataframe = self.outcome_specific_dataframes.negative_outcome_dataframe
-        positive_outcome_dataframe = self.outcome_specific_dataframes.positive_outcome_dataframe
-
-        number_of_levels = 0
-        for variable_idx, variable_name in enumerate(list_of_columns):
-            value_counts_pn0: pd.Series = negative_outcome_dataframe[variable_name].value_counts()
-            ratio_counts_pn0: pd.Series = negative_outcome_dataframe[variable_name].value_counts(normalize=True)
-
-            levels_pn0 = list(value_counts_pn0.index)
-            counts_pn0 = value_counts_pn0.to_list()
-            percentage_counts_pn0 = round(ratio_counts_pn0 * 100, ndigits=1).to_list()
-
-            value_counts_pn1: pd.Series = positive_outcome_dataframe[variable_name].value_counts()
-            ratio_counts_pn1: pd.Series = positive_outcome_dataframe[variable_name].value_counts(normalize=True)
-
-            counts_pn1 = value_counts_pn1.to_list()
-            percentage_counts_pn1 = round(ratio_counts_pn1 * 100, ndigits=1).to_list()
-
-            p_value = self.chi2_test_on_frequency_table(column_name=variable_name)
-
-            dataframe.loc[number_of_levels] = [
-                variable_name,
-                levels_pn0[0],
-                counts_pn0[0],
-                percentage_counts_pn0[0],
-                counts_pn1[0],
-                percentage_counts_pn1[0],
-                p_value
-            ]
-
-            for relative_level_idx, (level, count_pn0, percent_pn0, count_pn1, percent_pn1) in enumerate(
-                    zip(levels_pn0[1:], counts_pn0[1:], percentage_counts_pn0[1:], counts_pn0[1:],
-                        percentage_counts_pn1[1:]),
-                    start=1
-            ):
-                true_level_idx = relative_level_idx + number_of_levels
-                dataframe.loc[true_level_idx] = ["", level, count_pn0, percent_pn0, count_pn1, percent_pn1, ""]
-
-            number_of_levels += len(levels_pn0)
-
-        return dataframe
-
-    def pN_frequency_table(self, column_name: str):
-        result = pd.concat(
-            [
-                self.outcome_specific_dataframes.negative_outcome_dataframe[column_name].value_counts(),
-                self.outcome_specific_dataframes.positive_outcome_dataframe[column_name].value_counts()
-            ],
-            axis=1
-        )
-        result = result.fillna(0)
-
-        return result
-
-    def chi2_test_on_frequency_table(self, column_name: str):
-        result = self.pN_frequency_table(column_name=column_name)
-        chi2, p_value, dof, expected = stats.chi2_contingency(observed=result)
-
-        return p_value
-
-    def mann_whitney_u_test(
-            self,
-            column_name: str,
-            negative_outcome_dataframe: pd.DataFrame,
-            positive_outcome_dataframe: pd.DataFrame
-    ):
-        _, p = stats.mannwhitneyu(
-            x=negative_outcome_dataframe[column_name].dropna(),
-            y=positive_outcome_dataframe[column_name].dropna()
-        )
-
-        return p
-
-    def get_descriptive_stats_dataframe_from_pn(self, list_of_columns: list, outcome: str) -> pd.DataFrame:
-        outcome_specific_dataframes = self.get_dataframes_subset_from_given_columns(
+    def get_descriptive_stats_dataframe_from_specific_outcome(self, list_of_columns: list, outcome: str) -> pd.DataFrame:
+        outcome_specific_dataframes = self._get_dataframes_subset_from_given_columns(
             list_of_columns=list_of_columns,
             outcome=outcome
         )
@@ -248,7 +153,7 @@ class DescriptiveStatistics:
             if idx % 2 != 0:
                 p_value = ""
             else:
-                p_value = self.mann_whitney_u_test(
+                p_value = self._get_p_value_from_mann_whitney_u_test(
                     column_name=label,
                     negative_outcome_dataframe=negative_outcome_dataframe,
                     positive_outcome_dataframe=positive_outcome_dataframe
@@ -259,3 +164,160 @@ class DescriptiveStatistics:
         concat_df["p-value"] = p_values
 
         return concat_df
+
+    def _get_count_dataframe(self, variable_name, outcome_specific: bool = False):
+        if outcome_specific:
+            data = [
+                self.negative_outcome_dataframe[variable_name].value_counts(),
+                self.positive_outcome_dataframe[variable_name].value_counts()
+            ]
+
+            count_dataframe_int: pd.DataFrame(dtype=int) = pd.concat(data, axis=1).fillna(0).applymap(int)
+            count_dataframe_str: pd.DataFrame(dtype=str) = count_dataframe_int.applymap(str)
+
+            for column_idx, _ in enumerate(count_dataframe_int.columns):
+                column_sum = count_dataframe_int.iloc[:, column_idx].sum()
+                count_dataframe_str.iloc[:, column_idx] = count_dataframe_str.iloc[:, column_idx] + f"/{column_sum}"
+        else:
+            count_dataframe_int = self.dataframe[variable_name].value_counts().fillna(0).apply(int)
+            count_dataframe_str: pd.DataFrame(dtype=str) = count_dataframe_int.apply(str)
+
+            column_sum = count_dataframe_int.sum()
+            count_dataframe_str = count_dataframe_str + f"/{column_sum}"
+
+        return count_dataframe_str
+
+    def _get_percentage_dataframe(self, variable_name, outcome_sepcific: bool = False):
+        if outcome_sepcific:
+            data = [
+                round(self.negative_outcome_dataframe[variable_name].value_counts(normalize=True)*100, ndigits=1),
+                round(self.positive_outcome_dataframe[variable_name].value_counts(normalize=True)*100, ndigits=1)
+            ]
+
+            percentage_dataframe: pd.DataFrame(dtype=int) = pd.concat(data, axis=1).fillna(0)
+        else:
+            percentage_dataframe = round(self.dataframe[variable_name].value_counts(normalize=True)*100, ndigits=1)
+
+        return percentage_dataframe
+
+    def _get_count_and_percentage_dataframe_from_variable_name(
+            self,
+            variable_name: str,
+            outcome_specific: bool = False
+    ):
+        count_and_percentage_dataframe = pd.merge(
+            left=self._get_count_dataframe(variable_name=variable_name, outcome_specific=outcome_specific),
+            right=self._get_percentage_dataframe(variable_name=variable_name, outcome_sepcific=outcome_specific),
+            left_index=True,
+            right_index=True
+        )
+
+        return count_and_percentage_dataframe
+
+    @staticmethod
+    def _get_frequency_table_with_concatenated_list(
+            frequency_table: pd.DataFrame,
+            values: list,
+            first_column: bool = False
+    ):
+        series = pd.Series(data=values, index=frequency_table.index)
+
+        if first_column:
+            data = [series, frequency_table]
+        else:
+            data = [frequency_table, series]
+
+        frequency_table = pd.concat(data, axis=1, ignore_index=True)
+
+        return frequency_table
+
+    def get_frequency_table(self, list_of_columns: list):
+        dataframes = []
+        for variable_idx, variable_name in enumerate(list_of_columns):
+            frequency_table = self._get_count_and_percentage_dataframe_from_variable_name(
+                variable_name=variable_name,
+                outcome_specific=False
+            )
+
+            frequency_table = self._get_frequency_table_with_concatenated_list(
+                frequency_table=frequency_table,
+                values=list(frequency_table.index),
+                first_column=True
+            )
+
+            number_of_levels = len(frequency_table.index)
+            variable = [""] * number_of_levels
+            variable[0] = variable_name
+            frequency_table = self._get_frequency_table_with_concatenated_list(
+                frequency_table=frequency_table,
+                values=variable,
+                first_column=True
+            )
+
+            dataframes.append(frequency_table)
+
+        dataframe = pd.concat(dataframes)
+        columns = ["Variable", "Level", "n", "%"]
+        dataframe.columns = columns
+
+        return dataframe
+
+    def _get_outcome_dependent_frequency_table(self, column_name: str):
+        result = pd.concat(
+            [
+                self.outcome_specific_dataframes.negative_outcome_dataframe[column_name].value_counts(),
+                self.outcome_specific_dataframes.positive_outcome_dataframe[column_name].value_counts()
+            ],
+            axis=1
+        ).fillna(0)
+
+        return result
+
+    def _get_p_value_from_chi2_test_on_frequency_table(self, column_name: str):
+        result = self._get_outcome_dependent_frequency_table(column_name=column_name)
+        chi2, p_value, dof, expected = stats.chi2_contingency(observed=result)
+
+        return p_value
+
+    def get_frequency_table_and_test_on_proportions(self, list_of_columns: list, outcome: str):
+        self.outcome = outcome
+
+        dataframes = []
+        for variable_idx, variable_name in enumerate(list_of_columns):
+            frequency_table = self._get_count_and_percentage_dataframe_from_variable_name(
+                variable_name=variable_name,
+                outcome_specific=True
+            )
+
+            number_of_levels = len(frequency_table.index)
+
+            p_value = [""] * number_of_levels
+            p_value[0] = str(round(self._get_p_value_from_chi2_test_on_frequency_table(column_name=variable_name), ndigits=4))
+            frequency_table = self._get_frequency_table_with_concatenated_list(
+                frequency_table=frequency_table,
+                values=p_value
+            )
+
+            frequency_table = self._get_frequency_table_with_concatenated_list(
+                frequency_table=frequency_table,
+                values=list(frequency_table.index),
+                first_column=True
+            )
+
+            variable = [""] * number_of_levels
+            variable[0] = variable_name
+            frequency_table = self._get_frequency_table_with_concatenated_list(
+                frequency_table=frequency_table,
+                values=variable,
+                first_column=True
+            )
+
+            frequency_table = frequency_table[[0, 1, 2, 4, 3, 5, 6]]
+
+            dataframes.append(frequency_table)
+
+        dataframe = pd.concat(dataframes)
+        columns = ["Variable", "Level", "Negative n/N", "Negative %", "Positive n/N", "Positive %", "p-value"]
+        dataframe.columns = columns
+
+        return dataframe

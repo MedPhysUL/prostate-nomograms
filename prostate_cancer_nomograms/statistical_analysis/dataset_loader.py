@@ -8,7 +8,11 @@ class DatasetLoader:
 
     @property
     def dataset(self):
-        dataset = pd.read_csv(filepath_or_buffer=self.path_to_dataset)
+        if self.path_to_dataset.endswith(".csv"):
+            dataset = pd.read_csv(filepath_or_buffer=self.path_to_dataset)
+        else:
+            dataset = pd.read_excel(self.path_to_dataset)
+
         dataset = self.get_clean_dataset(dataset=dataset)
 
         return dataset
