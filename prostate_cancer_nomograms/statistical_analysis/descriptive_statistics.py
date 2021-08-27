@@ -1,58 +1,14 @@
-from typing import NamedTuple
-
 import numpy as np
 import pandas as pd
 from scipy import stats
 
-from .outcomes import Outcomes
+from .base_statistics import BaseStatistics
 
 
-class DescriptiveStatistics:
-
-    class OutcomeDataFrames(NamedTuple):
-        negative_outcome_dataframe: pd.DataFrame
-        positive_outcome_dataframe: pd.DataFrame
+class DescriptiveStatistics(BaseStatistics):
 
     def __init__(self, dataframe: pd.DataFrame):
-        self.dataframe = dataframe
-        self._outcome = None
-
-    @property
-    def outcome(self):
-        return self._outcome
-
-    @outcome.setter
-    def outcome(self, outcome: str):
-        if outcome in Outcomes.__members__:
-            self._outcome = outcome
-        else:
-            raise ValueError(f"Given member {outcome} is not allowed. Allowed members of {Outcomes} are "
-                             f"{list(Outcomes.__members__)}.")
-
-    @property
-    def outcome_specific_dataframes_information(self):
-        return Outcomes[self.outcome].value
-
-    @property
-    def outcome_specific_dataframes(self):
-        column_name = self.outcome_specific_dataframes_information.column_name_in_dataframe
-        value_of_negative_outcome = self.outcome_specific_dataframes_information.value_of_negative_outcome
-        value_of_positive_outcome = self.outcome_specific_dataframes_information.value_of_positive_outcome
-
-        outcome_specific_dataframes = self.OutcomeDataFrames(
-            negative_outcome_dataframe=self.dataframe[self.dataframe[column_name] == value_of_negative_outcome],
-            positive_outcome_dataframe=self.dataframe[self.dataframe[column_name] == value_of_positive_outcome],
-        )
-
-        return outcome_specific_dataframes
-
-    @property
-    def negative_outcome_dataframe(self):
-        return self.outcome_specific_dataframes.negative_outcome_dataframe
-
-    @property
-    def positive_outcome_dataframe(self):
-        return self.outcome_specific_dataframes.positive_outcome_dataframe
+        super().__init__(dataframe)
 
     def get_descriptive_stats_dataframe_from_given_columns(self, list_of_columns: list) -> pd.DataFrame:
         reduced_dataset = self.dataframe[list_of_columns]
@@ -66,7 +22,7 @@ class DescriptiveStatistics:
             column_name: str,
             negative_outcome_dataframe: pd.DataFrame,
             positive_outcome_dataframe: pd.DataFrame
-    ):
+    ) -> float:
         _, p_value = stats.mannwhitneyu(
             x=negative_outcome_dataframe[column_name].dropna(),
             y=positive_outcome_dataframe[column_name].dropna()
@@ -78,7 +34,7 @@ class DescriptiveStatistics:
     def _get_dataframe_with_strings_converted_to_numbers_in_given_column(
             column_name: str,
             dataframe: pd.DataFrame
-    ):
+    ) -> pd.DataFrame:
         if dataframe[column_name].dtype == object:
             numeric_value_mask = [value.replace(".", "", 1).isdigit() for value in dataframe[column_name].values]
 
@@ -119,7 +75,11 @@ class DescriptiveStatistics:
 
         return outcome_specific_dataframes
 
-    def get_descriptive_stats_dataframe_from_specific_outcome(self, list_of_columns: list, outcome: str) -> pd.DataFrame:
+    def get_descriptive_stats_dataframe_from_specific_outcome(
+            self,
+            list_of_columns: list,
+            outcome: str
+    ) -> pd.DataFrame:
         outcome_specific_dataframes = self._get_dataframes_subset_from_given_columns(
             list_of_columns=list_of_columns,
             outcome=outcome
@@ -165,7 +125,7 @@ class DescriptiveStatistics:
 
         return concat_df
 
-    def _get_count_dataframe(self, variable_name, outcome_specific: bool = False):
+    def _get_count_dataframe(self, variable_name, outcome_specific: bool = False) -> pd.DataFrame:
         if outcome_specific:
             data = [
                 self.negative_outcome_dataframe[variable_name].value_counts(),
@@ -187,8 +147,8 @@ class DescriptiveStatistics:
 
         return count_dataframe_str
 
-    def _get_percentage_dataframe(self, variable_name, outcome_sepcific: bool = False):
-        if outcome_sepcific:
+    def _get_percentage_dataframe(self, variable_name, outcome_specific: bool = False) -> pd.DataFrame:
+        if outcome_specific:
             data = [
                 round(self.negative_outcome_dataframe[variable_name].value_counts(normalize=True)*100, ndigits=1),
                 round(self.positive_outcome_dataframe[variable_name].value_counts(normalize=True)*100, ndigits=1)
@@ -204,10 +164,10 @@ class DescriptiveStatistics:
             self,
             variable_name: str,
             outcome_specific: bool = False
-    ):
+    ) -> pd.DataFrame:
         count_and_percentage_dataframe = pd.merge(
             left=self._get_count_dataframe(variable_name=variable_name, outcome_specific=outcome_specific),
-            right=self._get_percentage_dataframe(variable_name=variable_name, outcome_sepcific=outcome_specific),
+            right=self._get_percentage_dataframe(variable_name=variable_name, outcome_specific=outcome_specific),
             left_index=True,
             right_index=True
         )
@@ -219,7 +179,7 @@ class DescriptiveStatistics:
             frequency_table: pd.DataFrame,
             values: list,
             first_column: bool = False
-    ):
+    ) -> pd.DataFrame:
         series = pd.Series(data=values, index=frequency_table.index)
 
         if first_column:
@@ -231,7 +191,7 @@ class DescriptiveStatistics:
 
         return frequency_table
 
-    def get_frequency_table(self, list_of_columns: list):
+    def get_frequency_table(self, list_of_columns: list) -> pd.DataFrame:
         dataframes = []
         for variable_idx, variable_name in enumerate(list_of_columns):
             frequency_table = self._get_count_and_percentage_dataframe_from_variable_name(
@@ -262,7 +222,7 @@ class DescriptiveStatistics:
 
         return dataframe
 
-    def _get_outcome_dependent_frequency_table(self, column_name: str):
+    def _get_outcome_dependent_frequency_table(self, column_name: str) -> pd.DataFrame:
         result = pd.concat(
             [
                 self.outcome_specific_dataframes.negative_outcome_dataframe[column_name].value_counts(),
@@ -273,13 +233,13 @@ class DescriptiveStatistics:
 
         return result
 
-    def _get_p_value_from_chi2_test_on_frequency_table(self, column_name: str):
+    def _get_p_value_from_chi2_test_on_frequency_table(self, column_name: str) -> float:
         result = self._get_outcome_dependent_frequency_table(column_name=column_name)
         chi2, p_value, dof, expected = stats.chi2_contingency(observed=result)
 
         return p_value
 
-    def get_frequency_table_and_test_on_proportions(self, list_of_columns: list, outcome: str):
+    def get_frequency_table_and_test_on_proportions(self, list_of_columns: list, outcome: str) -> pd.DataFrame:
         self.outcome = outcome
 
         dataframes = []

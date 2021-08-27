@@ -1,71 +1,49 @@
 import pandas as pd
-import os
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy import stats
-from sklearn.metrics import roc_curve, roc_auc_score, auc
-from sklearn.calibration import calibration_curve
-from prostate_cancer_nomograms.root import PATH_TO_DATA_FOLDER
+from sklearn.metrics import roc_curve, auc
 
-# Dataset preparation
-dataset = pd.read_csv(
-    filepath_or_buffer=os.path.join(PATH_TO_DATA_FOLDER, "PreOp_Cores_dependent_results.csv")
-)
+from .base_statistics import BaseStatistics
 
-dataset.dropna(subset=["Gleason global biopsie"], inplace=True)
-dataset = dataset[dataset["pN"] != "pNx"]
-dataset = dataset[dataset["pN"] != "n/d"]
-dataset["Récurrence 5 ans (60 mois), oui = 1; non =0"] = dataset["Récurrence 5 ans (60 mois), oui = 1; non =0"].fillna(0)
-dataset["Récurrence 10 ans (120 mois), oui = 1; non =0"] = dataset["Récurrence 10 ans (120 mois), oui = 1; non =0"].fillna(0)
-dataset["Récurrence 10 ans (120 mois), oui = 1; non =0"] = dataset["Récurrence 5 ans (60 mois), oui = 1; non =0"] + dataset["Récurrence 10 ans (120 mois), oui = 1; non =0"]
 
-# Descriptive statistics
-clean_dataset = dataset[[
-    "Âge au diagnostique",
-    "PSA au diagnostique",
-    "% cores POS",
-    "% cores NEG",
-    "PSA_valeur de récidive",
-    "Durée de suivi (mois)",
-    "Dernière PSA",
-    "pN",
-    "Lymph Node Involvement (Cores)",
+class AUC(BaseStatistics):
+    def __init__(self, dataframe: pd.DataFrame):
+        super().__init__(dataframe)
 
-]]
-clean_dataset = clean_dataset.replace("pN1", 1)
-clean_dataset = clean_dataset.replace("pN0", 0)
+    def _calculate_auc_curve(self, outcome: str):
+        self.outcome = outcome
 
-print(np.array(clean_dataset["pN"]))
-print(np.array(clean_dataset["Lymph Node Involvement (Cores)"]))
+        outcome_column_name = self.outcome_specific_dataframes_information.outcome_column_name_in_dataframe
+        probability_column_name = self.outcome_specific_dataframes_information.probability_column_name_in_dataframe
+        value_of_positive_outcome = self.outcome_specific_dataframes_information.value_of_positive_outcome
 
-fpr, tpr, thresholds = roc_curve(
-    y_true=np.array(clean_dataset["pN"]),
-    y_score=np.array(clean_dataset["Lymph Node Involvement (Cores)"]),
-    pos_label=1
-)
+        print(self.outcome_specific_dataframes_information)
 
-auc_score = auc(
-    x=fpr,
-    y=tpr
-)
+        fpr, tpr, thresholds = roc_curve(
+            y_true=np.array(self.dataframe[outcome_column_name]),
+            y_score=np.array(self.dataframe[probability_column_name]),
+            pos_label=value_of_positive_outcome
+        )
 
-print(auc_score)
+        return fpr, tpr, thresholds
 
-plt.plot(fpr, tpr, color='darkorange', lw=2)
-plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Receiver operating characteristic example')
-plt.show()
+    @staticmethod
+    def get_auc_score(fpr, tpr):
+        auc_score = auc(
+            x=fpr,
+            y=tpr
+        )
 
-prob_true, prob_pred = calibration_curve(
-    y_true=clean_dataset["pN"],
-    y_prob=clean_dataset["Lymph Node Involvement (Cores)"],
-    n_bins=10
-)
-print(prob_pred)
-print(prob_true)
-plt.plot(prob_pred, prob_true, color="darkorange", lw=2)
-plt.show()
+        return auc_score
+
+    def plot_auc(self, outcome: str):
+        fpr, tpr, thresholds = self._calculate_auc_curve(outcome=outcome)
+
+        plt.plot(fpr, tpr, color='darkorange', lw=2)
+        plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title(f'Receiver operating characteristic (AUC = {self.get_auc_score(fpr=fpr, tpr=tpr): .3f})')
+        plt.show()

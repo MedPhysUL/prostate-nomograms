@@ -6,6 +6,7 @@ from prostate_cancer_nomograms.statistical_analysis.outcomes import Outcomes
 from prostate_cancer_nomograms.root import PATH_TO_DATA_FOLDER
 from prostate_cancer_nomograms.statistical_analysis.dataset_loader import DatasetLoader
 from prostate_cancer_nomograms.statistical_analysis.descriptive_statistics import DescriptiveStatistics
+from prostate_cancer_nomograms.statistical_analysis.AUC import AUC
 
 if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
@@ -90,4 +91,21 @@ if __name__ == "__main__":
     # -------- Frequency Table for BCR Recurrence 5 years -------- #
     sub_section_title_log(sub_section_title="Frequency Table for BCR Recurrence 5 years")
     logging.info(frequency_table_lymph_nodes.to_latex(index=False))
+
+    # ----------------------------------------------------------------------------------------------------------- #
+    #                                                   AUC                                                       #
+    # ----------------------------------------------------------------------------------------------------------- #
+    section_title_log(section_title="AUC")
+
+    auc = AUC(dataframe=dataset)
+
+    # -------- AUC for Lymph Nodes Involvement -------- #
+    sub_section_title_log(sub_section_title="AUC for Lymph Nodes Involvement")
+
+    auc_lymph_nodes = auc.plot_auc(outcome=Outcomes.LYMPH_NODE.name)
+
+    # -------- AUC for BCR Recurrence 5 years -------- #
+    sub_section_title_log(sub_section_title="AUC for BCR Recurrence 5 years ")
+
+    auc_bcr_5years = auc.plot_auc(outcome=Outcomes.BCR_5YEARS.name)
 
