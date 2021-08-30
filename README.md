@@ -5,7 +5,7 @@ A simple implementation of prostate cancer nomograms and some tools to perform s
 
 ## What is the purpose of this application?
 
-Nomograms are typically implemented as web-based applications in which a physician must fill in certain boxes from a patient's medical information. Once all the boxes are filled in, the prediction tool can either calculate the probability of several clinical outcomes or calculate a risk score associated with the patient's health status, depending on the type of nomogram. The **purpose** of this application is to speed up the process for a very large number of patients. Indeed, the statistical models of the nomograms are reproduced in Python which allows to calculate in a few seconds the probabilities and the scores of thousands of patients. The coefficients of the models are read from the web sites, then used for the calculations. Statistical tools are also implemented to analyze the results directly with Python.
+Nomograms are typically implemented as web-based applications in which a physician must fill in certain boxes using a patient's medical information. Once all the boxes are filled in, the prediction tool can either calculate the probability of several clinical outcomes or calculate a risk score associated with the patient's health status, depending on the type of nomogram. The **purpose** of this application is to speed up the process for a very large number of patients. Indeed, the statistical models of the nomograms are reproduced in Python which allows to calculate in a few seconds the probabilities and the scores of thousands of patients. The coefficients of the models are read from the web sites, then used for the calculations. Statistical tools are also implemented to analyze the results directly with Python.
 
 ## What nomograms are currently implemented?
 
@@ -35,14 +35,15 @@ The script `__main__.py` is the main script to get a dataset with new columns co
 
 #### Statistical analysis
 
-To perform a statistical analysis on a data set with previously determined probabilities and patient scores, go to the folder `prostate_cancer_nomograms\statistical_analysis` and run the `main_statistical_analysis.py` script. 
-
-## References
-
-[1]: <https://www.mskcc.org/nomograms/prostate> "MSKCC - Prostate Cancer Nomograms"
-[2]: https://urology.ucsf.edu/research/cancer/prostate-cancer-risk-assessment-and-the-ucsf-capra-score "UCSF CAPRA - Prostate Cancer Nomograms"
+To perform a statistical analysis on a dataset with previously determined probabilities and patient scores, go to the folder `prostate_cancer_nomograms\statistical_analysis` and run the `main_statistical_analysis.py` script. 
 
 ## Contact
 
 Maxence Larose, B. Ing., [maxence.larose.1@ulaval.ca](mailto:maxence.larose.1@ulaval.ca)
+
+
+
+[comment]: REFERENCES>
+[1]: <https://www.mskcc.org/nomograms/prostate> "MSKCC - Prostate Cancer Nomograms"
+[2]: https://urology.ucsf.edu/research/cancer/prostate-cancer-risk-assessment-and-the-ucsf-capra-score "UCSF CAPRA - Prostate Cancer Nomograms"
 
