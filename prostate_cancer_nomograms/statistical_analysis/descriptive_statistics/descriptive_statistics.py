@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-from .base_statistics import BaseStatistics
+from prostate_cancer_nomograms.statistical_analysis.descriptive_statistics.base_statistics import BaseStatistics
 
 
 class DescriptiveStatistics(BaseStatistics):

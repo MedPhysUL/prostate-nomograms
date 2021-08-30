@@ -3,10 +3,12 @@ import logging
 
 from prostate_cancer_nomograms.logging_tools import logs_file_setup, section_title_log, sub_section_title_log
 from prostate_cancer_nomograms.statistical_analysis.outcomes import Outcomes
+from prostate_cancer_nomograms.nomograms import Nomograms
 from prostate_cancer_nomograms.root import PATH_TO_DATA_FOLDER
-from prostate_cancer_nomograms.statistical_analysis.dataset_loader import DatasetLoader
-from prostate_cancer_nomograms.statistical_analysis.descriptive_statistics import DescriptiveStatistics
-from prostate_cancer_nomograms.statistical_analysis.AUC import AUC
+from prostate_cancer_nomograms.statistical_analysis.data_loaders.dataset_loader import DatasetLoader
+from prostate_cancer_nomograms.statistical_analysis.descriptive_statistics.descriptive_statistics import \
+    DescriptiveStatistics
+from prostate_cancer_nomograms.statistical_analysis.nomograms_performance_evaluation.AUC import AUC
 
 if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
@@ -17,7 +19,10 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     #                                             Data Loading                                                    #
     # ----------------------------------------------------------------------------------------------------------- #
-    dataset_loader = DatasetLoader(path_to_dataset=os.path.join(PATH_TO_DATA_FOLDER, "PreOp_Cores_dependent_results.csv"))
+    dataset_loader = DatasetLoader(
+        path_to_dataset=os.path.join(PATH_TO_DATA_FOLDER, "PreOp_Cores_dependent_results.csv")
+    )
+
     dataset = dataset_loader.dataset
 
     # ----------------------------------------------------------------------------------------------------------- #
@@ -93,19 +98,35 @@ if __name__ == "__main__":
     logging.info(frequency_table_lymph_nodes.to_latex(index=False))
 
     # ----------------------------------------------------------------------------------------------------------- #
-    #                                                   AUC                                                       #
+    #                                                AUC (MSKCC)                                                  #
     # ----------------------------------------------------------------------------------------------------------- #
-    section_title_log(section_title="AUC")
+    section_title_log(section_title="AUC (MSKCC)")
 
-    auc = AUC(dataframe=dataset)
+    auc = AUC(dataframe=dataset, nomogram=Nomograms.MSKCC.name)
 
-    # -------- AUC for Lymph Nodes Involvement -------- #
-    sub_section_title_log(sub_section_title="AUC for Lymph Nodes Involvement")
+    # -------- AUC for Lymph Nodes Involvement (MSKCC) -------- #
+    sub_section_title_log(sub_section_title="AUC for Lymph Nodes Involvement (MSKCC)")
 
-    auc_lymph_nodes = auc.plot_auc(outcome=Outcomes.LYMPH_NODE.name)
+    auc_lymph_nodes_mskcc = auc.plot_auc(outcome=Outcomes.LYMPH_NODE.name)
 
     # -------- AUC for BCR Recurrence 5 years -------- #
-    sub_section_title_log(sub_section_title="AUC for BCR Recurrence 5 years ")
+    sub_section_title_log(sub_section_title="AUC for BCR Recurrence 5 years (MSKCC)")
 
-    auc_bcr_5years = auc.plot_auc(outcome=Outcomes.BCR_5YEARS.name)
+    auc_bcr_5years_mskcc = auc.plot_auc(outcome=Outcomes.BCR_5YEARS.name)
 
+    # ----------------------------------------------------------------------------------------------------------- #
+    #                                                AUC (CAPRA)                                                  #
+    # ----------------------------------------------------------------------------------------------------------- #
+    section_title_log(section_title="AUC (CAPRA)")
+
+    auc.nomogram = Nomograms.CAPRA.name
+
+    # -------- AUC for Lymph Nodes Involvement (CAPRA) -------- #
+    sub_section_title_log(sub_section_title="AUC for Lymph Nodes Involvement (CAPRA)")
+
+    auc_lymph_nodes_capra = auc.plot_auc(outcome=Outcomes.LYMPH_NODE.name)
+
+    # -------- AUC for BCR Recurrence 5 years (CAPRA) -------- #
+    sub_section_title_log(sub_section_title="AUC for BCR Recurrence 5 years (CAPRA)")
+
+    auc_bcr_5years_capra = auc.plot_auc(outcome=Outcomes.BCR_5YEARS.name)

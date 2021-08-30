@@ -1,6 +1,6 @@
 from typing import NamedTuple
 import pandas as pd
-from .outcomes import Outcomes, OutcomeDataFrameInformation
+from prostate_cancer_nomograms.statistical_analysis.outcomes import Outcomes, OutcomeDataFrameInformation
 
 
 class BaseStatistics:

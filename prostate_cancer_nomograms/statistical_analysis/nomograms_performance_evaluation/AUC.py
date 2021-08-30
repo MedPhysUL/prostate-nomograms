@@ -3,32 +3,29 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import roc_curve, auc
 
-from .base_statistics import BaseStatistics
+from prostate_cancer_nomograms.statistical_analysis.nomograms_performance_evaluation.base_performance_evaluation import BasePerformanceEvaluation
 
 
-class AUC(BaseStatistics):
-    def __init__(self, dataframe: pd.DataFrame):
-        super().__init__(dataframe)
+class AUC(BasePerformanceEvaluation):
+    def __init__(self, dataframe: pd.DataFrame, nomogram: str):
+        super().__init__(dataframe, nomogram)
 
     def _calculate_auc_curve(self, outcome: str):
         self.outcome = outcome
 
         outcome_column_name = self.outcome_specific_dataframes_information.outcome_column_name_in_dataframe
-        probability_column_name = self.outcome_specific_dataframes_information.probability_column_name_in_dataframe
         value_of_positive_outcome = self.outcome_specific_dataframes_information.value_of_positive_outcome
-
-        print(self.outcome_specific_dataframes_information)
 
         fpr, tpr, thresholds = roc_curve(
             y_true=np.array(self.dataframe[outcome_column_name]),
-            y_score=np.array(self.dataframe[probability_column_name]),
+            y_score=self.predicted_probability,
             pos_label=value_of_positive_outcome
         )
 
         return fpr, tpr, thresholds
 
     @staticmethod
-    def get_auc_score(fpr, tpr):
+    def _get_auc_score(fpr, tpr):
         auc_score = auc(
             x=fpr,
             y=tpr
@@ -45,5 +42,5 @@ class AUC(BaseStatistics):
         plt.ylim([0.0, 1.05])
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
-        plt.title(f'Receiver operating characteristic (AUC = {self.get_auc_score(fpr=fpr, tpr=tpr): .3f})')
+        plt.title(f'Receiver operating characteristic (AUC = {self._get_auc_score(fpr=fpr, tpr=tpr): .3f})')
         plt.show()
