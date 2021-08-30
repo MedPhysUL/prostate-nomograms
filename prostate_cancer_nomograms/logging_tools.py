@@ -14,6 +14,10 @@ def logs_file_setup(file: str, level=logging.INFO):
     os.makedirs(logs_dir, exist_ok=True)
     logging.basicConfig(filename=logs_file, filemode='w+', level=level, format='%(message)s')
     sh = logging.StreamHandler(sys.stdout)
+
+    if logging.getLogger().hasHandlers():
+        logging.getLogger().handlers.clear()
+
     logging.getLogger().addHandler(sh)
 
 
