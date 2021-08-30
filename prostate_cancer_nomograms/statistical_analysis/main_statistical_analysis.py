@@ -52,7 +52,7 @@ logging.info(descriptive_stats_table.to_latex(index=False))
 # -------- Descriptive Statistics for Lymph Nodes Involvement -------- #
 descriptive_table_lymph_nodes = descriptive_statistics.get_descriptive_stats_dataframe_from_specific_outcome(
     list_of_columns=list_of_columns,
-    outcome=Outcomes.LYMPH_NODE.name
+    outcome=Outcomes.LYMPH_NODE_CORES.name
 )
 sub_section_title_log(sub_section_title="Descriptive Statistics for Lymph Nodes Involvement")
 logging.info(descriptive_table_lymph_nodes.to_latex(index=False))
@@ -105,7 +105,7 @@ auc = AUC(dataframe=dataset, nomogram=Nomograms.MSKCC.name)
 
 # -------- AUC for Lymph Nodes Involvement (MSKCC) -------- #
 sub_section_title_log(sub_section_title="AUC for Lymph Nodes Involvement (MSKCC)")
-auc_lymph_nodes_mskcc = auc.plot_auc(outcome=Outcomes.LYMPH_NODE.name)
+auc_lymph_nodes_mskcc = auc.plot_auc(outcome=Outcomes.LYMPH_NODE_CORES.name)
 
 # -------- AUC for BCR Recurrence 5 years -------- #
 sub_section_title_log(sub_section_title="AUC for BCR Recurrence 5 years (MSKCC)")
@@ -120,7 +120,7 @@ auc.nomogram = Nomograms.CAPRA.name
 
 # -------- AUC for Lymph Nodes Involvement (CAPRA) -------- #
 sub_section_title_log(sub_section_title="AUC for Lymph Nodes Involvement (CAPRA)")
-auc_lymph_nodes_capra = auc.plot_auc(outcome=Outcomes.LYMPH_NODE.name)
+auc_lymph_nodes_capra = auc.plot_auc(outcome=Outcomes.LYMPH_NODE_CORES.name)
 
 # -------- AUC for BCR Recurrence 5 years (CAPRA) -------- #
 sub_section_title_log(sub_section_title="AUC for BCR Recurrence 5 years (CAPRA)")
@@ -134,7 +134,7 @@ calibration_curve = CalibrationCurve(dataframe=dataset, nomogram=Nomograms.MSKCC
 
 # -------- Calibration curve for Lymph Nodes Involvement (MSKCC) -------- #
 sub_section_title_log(sub_section_title="Calibration curve for Lymph Nodes Involvement (MSKCC)")
-calibration_curve_lymph_nodes_mskcc = calibration_curve.plot_calibration_curve(outcome=Outcomes.LYMPH_NODE.name)
+calibration_curve_lymph_nodes_mskcc = calibration_curve.plot_calibration_curve(outcome=Outcomes.LYMPH_NODE_CORES.name)
 
 # -------- Calibration curve for BCR Recurrence 5 years -------- #
 sub_section_title_log(sub_section_title="Calibration curve for BCR Recurrence 5 years (MSKCC)")
@@ -152,7 +152,7 @@ calibration_curve.nomogram = Nomograms.CAPRA.name
 
 # -------- Calibration curve for Lymph Nodes Involvement (CAPRA) -------- #
 sub_section_title_log(sub_section_title="Calibration curve for Lymph Nodes Involvement (CAPRA)")
-calibration_curve_lymph_nodes_capra = calibration_curve.plot_calibration_curve(outcome=Outcomes.LYMPH_NODE.name)
+calibration_curve_lymph_nodes_capra = calibration_curve.plot_calibration_curve(outcome=Outcomes.LYMPH_NODE_CORES.name)
 
 # -------- Calibration curve for BCR Recurrence 5 years (CAPRA) -------- #
 sub_section_title_log(sub_section_title="Calibration curve for BCR Recurrence 5 years (CAPRA)")

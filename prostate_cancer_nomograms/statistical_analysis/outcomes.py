@@ -14,7 +14,7 @@ class OutcomeDataFrameInformation(NamedTuple):
     nomograms: NomogramColumnName
 
 
-LYMPH_NODE_INFO = OutcomeDataFrameInformation(
+LYMPH_NODE_CORES_INFO = OutcomeDataFrameInformation(
     outcome_column_name_in_dataframe="pN",
     value_of_negative_outcome="pN0",
     value_of_positive_outcome="pN1",
@@ -34,5 +34,5 @@ BCR_5YEARS_INFO = OutcomeDataFrameInformation(
 
 
 class Outcomes(enum.Enum):
-    LYMPH_NODE = LYMPH_NODE_INFO
+    LYMPH_NODE_CORES = LYMPH_NODE_CORES_INFO
     BCR_5YEARS = BCR_5YEARS_INFO
