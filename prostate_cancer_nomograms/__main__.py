@@ -16,10 +16,10 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                Constant                                                     #
     # ----------------------------------------------------------------------------------------------------------- #
-    DATASET_NAME = "Data_PreOp_17_08_2021.xlsx"
-    RESULTS_NAME_CAPRA_ONLY = "PreOp_Cores_CAPRA_only_results.csv"
-    RESULTS_NAME_CORES_DEPENDANT = "PreOp_Cores_dependent_results.csv"
-    RESULTS_NAME_CORES_INDEPENDENT = "PreOp_Cores_independent_results.csv"
+    DATASET_NAME = "fake_dataset.xlsx"
+    RESULTS_NAME_CAPRA_ONLY = "CAPRA_results.csv"
+    RESULTS_NAME_CORES_DEPENDANT = "CORES_DEPENDANT_results.csv"
+    RESULTS_NAME_CORES_INDEPENDENT = "CORES_INDEPENDANT_results.csv"
 
     NUMBER_OF_YEARS = [5, 10]
     CLEAN_DATAFRAME = True
@@ -56,10 +56,11 @@ if __name__ == "__main__":
         clean_cores_patient_dataframe[clean_cores_patient_dataframe["NbCteNegative"] != "N.D."]
 
     mskcc_allowed_patient_dataframe = deepcopy(patient_dataframe[patient_dataframe["À exclure du MSKCC (oui =1, non=0)"] == 0])
-    mskcc_allowed_clean_cores_patient_dataframe = deepcopy(clean_cores_patient_dataframe[
-        clean_cores_patient_dataframe["À exclure du MSKCC (oui =1, non=0)"] == 0
-    ]
-                                                           )
+    mskcc_allowed_clean_cores_patient_dataframe = deepcopy(
+        clean_cores_patient_dataframe[
+            clean_cores_patient_dataframe["À exclure du MSKCC (oui =1, non=0)"] == 0
+            ]
+    )
 
     # ----------------------------------------------------------------------------------------------------------- #
     #                                              CAPRA Only                                                     #
@@ -137,3 +138,9 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     mskcc_allowed_patient_dataframe.to_csv(path_or_buf=os.path.join(PATH_TO_DATA_FOLDER, RESULTS_NAME_CORES_INDEPENDENT))
     mskcc_allowed_clean_cores_patient_dataframe.to_csv(path_or_buf=os.path.join(PATH_TO_DATA_FOLDER, RESULTS_NAME_CORES_DEPENDANT))
+
+    # ----------------------------------------------------------------------------------------------------------- #
+    #                                     Statistics and Performance Evaluation                                   #
+    # ----------------------------------------------------------------------------------------------------------- #
+    import prostate_cancer_nomograms.statistical_analysis.main_statistical_analysis
+
