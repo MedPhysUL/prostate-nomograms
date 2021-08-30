@@ -13,12 +13,11 @@ class AUC(BasePerformanceEvaluation):
     def _calculate_auc_curve(self, outcome: str):
         self.outcome = outcome
 
-        outcome_column_name = self.outcome_specific_dataframes_information.outcome_column_name_in_dataframe
         value_of_positive_outcome = self.outcome_specific_dataframes_information.value_of_positive_outcome
 
         fpr, tpr, thresholds = roc_curve(
-            y_true=np.array(self.dataframe[outcome_column_name]),
-            y_score=self.predicted_probability,
+            y_true=self.y_true,
+            y_score=self.y_score,
             pos_label=value_of_positive_outcome
         )
 
@@ -42,5 +41,6 @@ class AUC(BasePerformanceEvaluation):
         plt.ylim([0.0, 1.05])
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
-        plt.title(f'Receiver operating characteristic (AUC = {self._get_auc_score(fpr=fpr, tpr=tpr): .3f})')
+        plt.title(f'Receiver operating characteristic (AUC = {self._get_auc_score(fpr=fpr, tpr=tpr): .3f}) \n'
+                  f'{self.nomogram} - {self.outcome}')
         plt.show()

@@ -25,7 +25,7 @@ class BasePerformanceEvaluation(BaseStatistics):
                              f"{list(Nomograms.__members__)}.")
 
     @property
-    def predicted_probability(self):
+    def y_score(self):
         outcome_column_name = self.outcome_specific_dataframes_information.outcome_column_name_in_dataframe
         value_of_positive_outcome = self.outcome_specific_dataframes_information.value_of_positive_outcome
 
@@ -43,3 +43,10 @@ class BasePerformanceEvaluation(BaseStatistics):
             column_name = getattr(self.outcome_specific_dataframes_information.nomograms, self.nomogram)
 
             return np.array(self.dataframe[column_name])
+
+    @property
+    def y_true(self):
+        outcome_column_name = self.outcome_specific_dataframes_information.outcome_column_name_in_dataframe
+        y_true = np.array(self.dataframe[outcome_column_name])
+
+        return y_true

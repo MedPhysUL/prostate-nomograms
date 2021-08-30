@@ -9,6 +9,8 @@ from prostate_cancer_nomograms.statistical_analysis.data_loaders.dataset_loader 
 from prostate_cancer_nomograms.statistical_analysis.descriptive_statistics.descriptive_statistics import \
     DescriptiveStatistics
 from prostate_cancer_nomograms.statistical_analysis.nomograms_performance_evaluation.AUC import AUC
+from prostate_cancer_nomograms.statistical_analysis.nomograms_performance_evaluation.calibration_curve import \
+    CalibrationCurve
 
 if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
@@ -101,17 +103,14 @@ if __name__ == "__main__":
     #                                                AUC (MSKCC)                                                  #
     # ----------------------------------------------------------------------------------------------------------- #
     section_title_log(section_title="AUC (MSKCC)")
-
     auc = AUC(dataframe=dataset, nomogram=Nomograms.MSKCC.name)
 
     # -------- AUC for Lymph Nodes Involvement (MSKCC) -------- #
     sub_section_title_log(sub_section_title="AUC for Lymph Nodes Involvement (MSKCC)")
-
     auc_lymph_nodes_mskcc = auc.plot_auc(outcome=Outcomes.LYMPH_NODE.name)
 
     # -------- AUC for BCR Recurrence 5 years -------- #
     sub_section_title_log(sub_section_title="AUC for BCR Recurrence 5 years (MSKCC)")
-
     auc_bcr_5years_mskcc = auc.plot_auc(outcome=Outcomes.BCR_5YEARS.name)
 
     # ----------------------------------------------------------------------------------------------------------- #
@@ -123,10 +122,43 @@ if __name__ == "__main__":
 
     # -------- AUC for Lymph Nodes Involvement (CAPRA) -------- #
     sub_section_title_log(sub_section_title="AUC for Lymph Nodes Involvement (CAPRA)")
-
     auc_lymph_nodes_capra = auc.plot_auc(outcome=Outcomes.LYMPH_NODE.name)
 
     # -------- AUC for BCR Recurrence 5 years (CAPRA) -------- #
     sub_section_title_log(sub_section_title="AUC for BCR Recurrence 5 years (CAPRA)")
-
     auc_bcr_5years_capra = auc.plot_auc(outcome=Outcomes.BCR_5YEARS.name)
+
+    # ----------------------------------------------------------------------------------------------------------- #
+    #                                          Calibration curve (MSKCC)                                          #
+    # ----------------------------------------------------------------------------------------------------------- #
+    section_title_log(section_title="Calibration curve (MSKCC)")
+    calibration_curve = CalibrationCurve(dataframe=dataset, nomogram=Nomograms.MSKCC.name)
+
+    # -------- Calibration curve for Lymph Nodes Involvement (MSKCC) -------- #
+    sub_section_title_log(sub_section_title="Calibration curve for Lymph Nodes Involvement (MSKCC)")
+    calibration_curve_lymph_nodes_mskcc = calibration_curve.plot_calibration_curve(outcome=Outcomes.LYMPH_NODE.name)
+
+    # -------- Calibration curve for BCR Recurrence 5 years -------- #
+    sub_section_title_log(sub_section_title="Calibration curve for BCR Recurrence 5 years (MSKCC)")
+    calibration_curve_bcr_5years_mskcc = calibration_curve.plot_calibration_curve(
+        outcome=Outcomes.BCR_5YEARS.name,
+        reverse_outcome=True
+    )
+
+    # ----------------------------------------------------------------------------------------------------------- #
+    #                                           Calibration curve (CAPRA)                                         #
+    # ----------------------------------------------------------------------------------------------------------- #
+    section_title_log(section_title="Calibration curve (CAPRA)")
+
+    calibration_curve.nomogram = Nomograms.CAPRA.name
+
+    # -------- Calibration curve for Lymph Nodes Involvement (CAPRA) -------- #
+    sub_section_title_log(sub_section_title="Calibration curve for Lymph Nodes Involvement (CAPRA)")
+    calibration_curve_lymph_nodes_capra = calibration_curve.plot_calibration_curve(outcome=Outcomes.LYMPH_NODE.name)
+
+    # -------- Calibration curve for BCR Recurrence 5 years (CAPRA) -------- #
+    sub_section_title_log(sub_section_title="Calibration curve for BCR Recurrence 5 years (CAPRA)")
+    calibration_curve_bcr_5years_capra = calibration_curve.plot_calibration_curve(
+        outcome=Outcomes.BCR_5YEARS.name,
+        reverse_outcome=True
+    )
