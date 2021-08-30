@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import roc_curve, auc
 
-from prostate_cancer_nomograms.statistical_analysis.nomograms_performance_evaluation.base_performance_evaluation import BasePerformanceEvaluation
+from prostate_cancer_nomograms.statistical_analysis.base.base_performance_evaluation import BasePerformanceEvaluation
 
 
 class AUC(BasePerformanceEvaluation):

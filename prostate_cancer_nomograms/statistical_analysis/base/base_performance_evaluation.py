@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 
-from prostate_cancer_nomograms.statistical_analysis.descriptive_statistics.base_statistics import BaseStatistics
-from prostate_cancer_nomograms.statistical_analysis.nomograms_performance_evaluation.logistic_regression import CustomLogisticRegression
+from prostate_cancer_nomograms.statistical_analysis.base.base_statistics import BaseStatistics
+from prostate_cancer_nomograms.statistical_analysis.base.logistic_regression import CustomLogisticRegression
 from prostate_cancer_nomograms.nomograms import Nomograms
 
 
