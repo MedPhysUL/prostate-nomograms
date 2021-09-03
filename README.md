@@ -5,7 +5,7 @@ A simple implementation of prostate cancer nomograms and some tools to perform s
 
 ## What is the purpose of this application?
 
-Nomograms are typically implemented as web-based applications in which a physician must fill in certain boxes using a patient's medical information. Once all the boxes are filled in, the prediction tool can either calculate the probability of several clinical outcomes or calculate a risk score associated with the patient's health status, depending on the type of nomogram. The **purpose** of this application is to speed up the process for a very large number of patients. Indeed, the statistical models of the nomograms are reproduced in Python which allows to calculate in a few seconds the probabilities and the scores of thousands of patients. The coefficients of the models are read from the web sites, then used for the calculations. Statistical tools are also implemented to analyze the results directly with Python.
+Nomograms are typically implemented as web-based applications in which a physician must fill in certain boxes using a patient's medical information. Once all the boxes are filled in, the prediction tool can either calculate the probability of several clinical outcomes or calculate a risk score associated with the patient's health status, depending on the type of nomogram. The **purpose** of this application is to speed up the process for a very large number of patients. Indeed, the statistical models of the nomograms are reproduced in Python which allows to calculate in a few seconds the probabilities and the scores of thousands of patients. The coefficients of the models are read from the web sites, then used for the calculations. Statistical tools are also implemented to analyze the results directly with Python. **Note that the decision curve analysis implementation was copied entirely from Matt Black's GitHub repository. <sup>[2][2]</sup>**
 
 ## What nomograms are currently implemented?
 
@@ -45,5 +45,6 @@ Maxence Larose, B. Ing., [maxence.larose.1@ulaval.ca](mailto:maxence.larose.1@ul
 
 [comment]: REFERENCES>
 [1]: <https://www.mskcc.org/nomograms/prostate> "MSKCC - Prostate Cancer Nomograms"
-[2]: https://urology.ucsf.edu/research/cancer/prostate-cancer-risk-assessment-and-the-ucsf-capra-score "UCSF CAPRA - Prostate Cancer Nomograms"
+[2]:  https://github.com/matt-black/dcapy "Matt Black's decision curve analysis library for Python"
+[3]: https://urology.ucsf.edu/research/cancer/prostate-cancer-risk-assessment-and-the-ucsf-capra-score "UCSF CAPRA - Prostate Cancer Nomograms"
 

@@ -16,7 +16,7 @@ if __name__ == "__main__":
     #                                                Constant                                                     #
     # ----------------------------------------------------------------------------------------------------------- #
     DATASET_NAME = "fake_dataset.xlsx"
-    RESULTS_NAME_CORES_DEPENDANT = "CORES_DEPENDANT_results.csv"
+    RESULTS_NAME_CORES_DEPENDANT = "CORES_DEPENDENT_results.csv"
 
     NUMBER_OF_YEARS = [5, 10]
     CLEAN_DATAFRAME = True
@@ -106,4 +106,3 @@ if __name__ == "__main__":
     mskcc_allowed_clean_cores_patient_dataframe.to_csv(
         path_or_buf=os.path.join(PATH_TO_DATA_FOLDER, RESULTS_NAME_CORES_DEPENDANT)
     )
-
