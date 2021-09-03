@@ -21,7 +21,7 @@ The two MSKCC nomograms directly give the probability and risk of different outc
 
 ## Disclaimer
 
-This project was developed with the aim of being used for a very specific project requiring data analysis during my master's degree in physics at *Centre de recherche, CHU de Québec-Université Laval* and the generalization of the implementation was therefore not the (primary) objective. It is however a good starting point for anyone who wants to perform statistical analysis on nomograms developed as a web application.
+This project was developed with the aim of being used for a very specific project requiring data analysis during my master's degree in physics at *Centre de recherche, CHU de Québec-Université Laval* and the generalization of the implementation was therefore not the (primary) objective. It is however a good starting point for anyone who wants to perform statistical analysis on nomograms developed as web applications.
 
 ## Getting started
 
