@@ -18,8 +18,8 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     DATASET_NAME = "fake_dataset.xlsx"
     RESULTS_NAME_CAPRA_ONLY = "CAPRA_results.csv"
-    RESULTS_NAME_CORES_DEPENDANT = "CORES_DEPENDANT_results.csv"
-    RESULTS_NAME_CORES_INDEPENDENT = "CORES_INDEPENDANT_results.csv"
+    RESULTS_NAME_CORES_DEPENDANT = "CORES_DEPENDENT_results.csv"
+    RESULTS_NAME_CORES_INDEPENDENT = "CORES_INDEPENDENT_results.csv"
 
     NUMBER_OF_YEARS = [5, 10]
     CLEAN_DATAFRAME = True

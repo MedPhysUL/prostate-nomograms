@@ -1,6 +1,8 @@
 import os
 import logging
 
+import matplotlib.pyplot as plt
+
 from prostate_cancer_nomograms.logging_tools import logs_file_setup, section_title_log, sub_section_title_log
 from prostate_cancer_nomograms.statistical_analysis.outcomes import Outcomes
 from prostate_cancer_nomograms.nomograms import Nomograms
@@ -11,6 +13,7 @@ from prostate_cancer_nomograms.statistical_analysis.descriptive_statistics.descr
 from prostate_cancer_nomograms.statistical_analysis.nomograms_performance_evaluation.AUC import AUC
 from prostate_cancer_nomograms.statistical_analysis.nomograms_performance_evaluation.calibration_curve import \
     CalibrationCurve
+from prostate_cancer_nomograms.statistical_analysis.nomograms_performance_evaluation.DCA import DCA
 
 # ----------------------------------------------------------------------------------------------------------- #
 #                                              Logs Setup                                                     #
@@ -21,7 +24,7 @@ logs_file_setup(__file__, logging.INFO)
 #                                             Data Loading                                                    #
 # ----------------------------------------------------------------------------------------------------------- #
 dataset_loader = DatasetLoader(
-    path_to_dataset=os.path.join(PATH_TO_DATA_FOLDER, "CORES_DEPENDANT_results.csv")
+    path_to_dataset=os.path.join(PATH_TO_DATA_FOLDER, "CORES_DEPENDENT_results.csv")
 )
 
 dataset = dataset_loader.dataset
@@ -160,3 +163,31 @@ calibration_curve_bcr_5years_capra = calibration_curve.plot_calibration_curve(
     outcome=Outcomes.BCR_5YEARS.name,
     reverse_outcome=True
 )
+
+# ----------------------------------------------------------------------------------------------------------- #
+#                                     Decision curve analysis (MSKCC)                                         #
+# ----------------------------------------------------------------------------------------------------------- #
+section_title_log(section_title="Decision curve analysis (MSKCC)")
+dca = DCA(dataframe=dataset, nomogram=Nomograms.MSKCC.name)
+
+# -------- DCA for Lymph Nodes Involvement (MSKCC) -------- #
+sub_section_title_log(sub_section_title="DCA for Lymph Nodes Involvement (MSKCC)")
+dca_lymph_nodes_mskcc = dca.plot_dca(outcome=Outcomes.LYMPH_NODE.name)
+
+# -------- DCA for BCR Recurrence 5 years (MSKCC) -------- #
+sub_section_title_log(sub_section_title="DCA for BCR Recurrence 5 years (MSKCC)")
+dca_bcr_5years_mskcc = dca.plot_dca(outcome=Outcomes.BCR_5YEARS.name)
+
+# ----------------------------------------------------------------------------------------------------------- #
+#                                     Decision curve analysis (CAPRA)                                         #
+# ----------------------------------------------------------------------------------------------------------- #
+section_title_log(section_title="Decision curve analysis (CAPRA)")
+dca = DCA(dataframe=dataset, nomogram=Nomograms.CAPRA.name)
+
+# -------- DCA for Lymph Nodes Involvement (CAPRA) -------- #
+sub_section_title_log(sub_section_title="DCA for Lymph Nodes Involvement (CAPRA)")
+dca_lymph_nodes_capra = dca.plot_dca(outcome=Outcomes.LYMPH_NODE.name)
+
+# -------- DCA for BCR Recurrence 5 years (CAPRA) -------- #
+sub_section_title_log(sub_section_title="DCA for BCR Recurrence 5 years (CAPRA)")
+dca_bcr_5years_capra = dca.plot_dca(outcome=Outcomes.BCR_5YEARS.name)
