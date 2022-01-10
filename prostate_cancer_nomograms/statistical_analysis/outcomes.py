@@ -24,9 +24,9 @@ LYMPH_NODE_INFO = OutcomeDataFrameInformation(
 )
 
 BCR_5YEARS_INFO = OutcomeDataFrameInformation(
-    outcome_column_name_in_dataframe="Récurrence 5 ans (60 mois), oui = 1; non =0",
-    value_of_negative_outcome=1,
-    value_of_positive_outcome=0,
+    outcome_column_name_in_dataframe="Récurrence 5 ans (60 mois) oui = 1 non =0",
+    value_of_negative_outcome=0,
+    value_of_positive_outcome=1,
     nomograms=NomogramColumnName(
         MSKCC="Preoperative BCR (Cores)_5_years"
     )

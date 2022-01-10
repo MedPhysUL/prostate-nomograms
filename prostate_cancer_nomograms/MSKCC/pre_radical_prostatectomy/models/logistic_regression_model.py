@@ -70,7 +70,7 @@ class LogisticRegressionModel(BaseLogisticRegressionModel):
         result = self.variables_values["Intercept"]
         result += np.array(self.patients_information["PSA au diagnostique"]) * self.variables_values["Preoperative PSA"]
         result += self.spline_term_1 * self.variables_values["Preoperative PSA Spline 1"]
-        result += self.spline_term_2 * self.variables_values["Preoperative PSA Spline 2"]
+        result += np.array(self.spline_term_2 * self.variables_values["Preoperative PSA Spline 2"], dtype=float)
         result += np.array(self.patients_information["Âge au diagnostique"]) * self.variables_values["Patient Age"]
         result += self.gleason_value
         result += self.clinical_stage_value

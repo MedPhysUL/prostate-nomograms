@@ -1,7 +1,9 @@
 import os
 import logging
+from copy import deepcopy
 
 import matplotlib.pyplot as plt
+import pandas as pd
 
 from prostate_cancer_nomograms.logging_tools import logs_file_setup, section_title_log, sub_section_title_log
 from prostate_cancer_nomograms.statistical_analysis.outcomes import Outcomes
@@ -29,6 +31,41 @@ dataset_loader = DatasetLoader(
 
 dataset = dataset_loader.dataset
 
+df = dataset[
+    ["Durée depuis la récurrence biochimique (mois)",
+     "Récurrence 5 ans (60 mois) oui = 1 non =0",
+     "CAPRA Score",
+     "Durée de suivi (mois)"
+     ]]
+follow_up_times = list(df["Durée de suivi (mois)"])
+times_to_recurrence = deepcopy(list(df["Durée depuis la récurrence biochimique (mois)"]))
+
+for idx, (time_to_recurrence, follow_up_time) in enumerate(zip(times_to_recurrence, follow_up_times)):
+    if not pd.isna(time_to_recurrence):
+        if time_to_recurrence < 60.0:
+            pass
+        elif time_to_recurrence > 60.0:
+            times_to_recurrence[idx] = 60.0
+    else:
+        if follow_up_time > 60.0:
+            times_to_recurrence[idx] = 60.0
+        else:
+            times_to_recurrence[idx] = follow_up_time
+
+print(list(dataset["newTEPnb"]))
+print(times_to_recurrence)
+
+from sksurv import metrics
+import numpy as np
+
+result = metrics.concordance_index_censored(
+    event_indicator=list(map(bool, list(df["Récurrence 5 ans (60 mois) oui = 1 non =0"]))),
+    event_time=times_to_recurrence,
+    estimate=np.array(df["CAPRA Score"])
+)
+
+print(result)
+exit(0)
 # ----------------------------------------------------------------------------------------------------------- #
 #                                         Descriptive statistics                                              #
 # ----------------------------------------------------------------------------------------------------------- #
@@ -42,8 +79,8 @@ list_of_columns = [
     "PSA au diagnostique",
     "% cores POS",
     "% cores NEG",
-    "PSA_valeur de récidive",
-    "Dernière PSA",
+    # "PSA_valeur de récidive",
+    # "Dernière PSA",
     "pN"
 ]
 descriptive_stats_table = descriptive_statistics.get_descriptive_stats_dataframe_from_given_columns(
@@ -80,8 +117,8 @@ list_of_columns = [
     "Gleason primaire biopsie",
     "Gleason secondaire biopsie",
     "pN",
-    "Récurrence 5 ans (60 mois), oui = 1; non =0",
-    "Récurrence 10 ans (120 mois), oui = 1; non =0",
+    "Récurrence 5 ans (60 mois) oui = 1 non =0",
+    "Récurrence 10 ans (120 mois) oui = 1; non =0",
 ]
 frequency_table = descriptive_statistics.get_frequency_table(list_of_columns=list_of_columns)
 
@@ -91,14 +128,18 @@ logging.info(frequency_table.to_latex(index=False))
 # -------- Frequency Table for Lymph Nodes Involvement -------- #
 frequency_table_lymph_nodes = descriptive_statistics.get_frequency_table_and_test_on_proportions(
     list_of_columns=list_of_columns,
-    outcome=Outcomes.BCR_5YEARS.name
+    outcome=Outcomes.LYMPH_NODE.name
 )
 sub_section_title_log(sub_section_title="Frequency Table for Lymph Nodes Involvement")
 logging.info(frequency_table_lymph_nodes.to_latex(index=False))
 
 # -------- Frequency Table for BCR Recurrence 5 years -------- #
+frequency_table_bcr_5 = descriptive_statistics.get_frequency_table_and_test_on_proportions(
+    list_of_columns=list_of_columns,
+    outcome=Outcomes.BCR_5YEARS.name
+)
 sub_section_title_log(sub_section_title="Frequency Table for BCR Recurrence 5 years")
-logging.info(frequency_table_lymph_nodes.to_latex(index=False))
+logging.info(frequency_table_bcr_5.to_latex(index=False))
 
 # ----------------------------------------------------------------------------------------------------------- #
 #                                                AUC (MSKCC)                                                  #
@@ -132,37 +173,37 @@ auc_bcr_5years_capra = auc.plot_auc(outcome=Outcomes.BCR_5YEARS.name)
 # ----------------------------------------------------------------------------------------------------------- #
 #                                          Calibration curve (MSKCC)                                          #
 # ----------------------------------------------------------------------------------------------------------- #
-section_title_log(section_title="Calibration curve (MSKCC)")
-calibration_curve = CalibrationCurve(dataframe=dataset, nomogram=Nomograms.MSKCC.name)
-
-# -------- Calibration curve for Lymph Nodes Involvement (MSKCC) -------- #
-sub_section_title_log(sub_section_title="Calibration curve for Lymph Nodes Involvement (MSKCC)")
-calibration_curve_lymph_nodes_mskcc = calibration_curve.plot_calibration_curve(outcome=Outcomes.LYMPH_NODE.name)
-
-# -------- Calibration curve for BCR Recurrence 5 years -------- #
-sub_section_title_log(sub_section_title="Calibration curve for BCR Recurrence 5 years (MSKCC)")
-calibration_curve_bcr_5years_mskcc = calibration_curve.plot_calibration_curve(
-    outcome=Outcomes.BCR_5YEARS.name,
-    reverse_outcome=True
-)
+# section_title_log(section_title="Calibration curve (MSKCC)")
+# calibration_curve = CalibrationCurve(dataframe=dataset, nomogram=Nomograms.MSKCC.name)
+#
+# # -------- Calibration curve for Lymph Nodes Involvement (MSKCC) -------- #
+# sub_section_title_log(sub_section_title="Calibration curve for Lymph Nodes Involvement (MSKCC)")
+# calibration_curve_lymph_nodes_mskcc = calibration_curve.plot_calibration_curve(outcome=Outcomes.LYMPH_NODE.name)
+#
+# # -------- Calibration curve for BCR Recurrence 5 years -------- #
+# sub_section_title_log(sub_section_title="Calibration curve for BCR Recurrence 5 years (MSKCC)")
+# calibration_curve_bcr_5years_mskcc = calibration_curve.plot_calibration_curve(
+#     outcome=Outcomes.BCR_5YEARS.name,
+#     reverse_outcome=True
+# )
 
 # ----------------------------------------------------------------------------------------------------------- #
 #                                           Calibration curve (CAPRA)                                         #
 # ----------------------------------------------------------------------------------------------------------- #
-section_title_log(section_title="Calibration curve (CAPRA)")
-
-calibration_curve.nomogram = Nomograms.CAPRA.name
-
-# -------- Calibration curve for Lymph Nodes Involvement (CAPRA) -------- #
-sub_section_title_log(sub_section_title="Calibration curve for Lymph Nodes Involvement (CAPRA)")
-calibration_curve_lymph_nodes_capra = calibration_curve.plot_calibration_curve(outcome=Outcomes.LYMPH_NODE.name)
-
-# -------- Calibration curve for BCR Recurrence 5 years (CAPRA) -------- #
-sub_section_title_log(sub_section_title="Calibration curve for BCR Recurrence 5 years (CAPRA)")
-calibration_curve_bcr_5years_capra = calibration_curve.plot_calibration_curve(
-    outcome=Outcomes.BCR_5YEARS.name,
-    reverse_outcome=True
-)
+# section_title_log(section_title="Calibration curve (CAPRA)")
+#
+# calibration_curve.nomogram = Nomograms.CAPRA.name
+#
+# # -------- Calibration curve for Lymph Nodes Involvement (CAPRA) -------- #
+# sub_section_title_log(sub_section_title="Calibration curve for Lymph Nodes Involvement (CAPRA)")
+# calibration_curve_lymph_nodes_capra = calibration_curve.plot_calibration_curve(outcome=Outcomes.LYMPH_NODE.name)
+#
+# # -------- Calibration curve for BCR Recurrence 5 years (CAPRA) -------- #
+# sub_section_title_log(sub_section_title="Calibration curve for BCR Recurrence 5 years (CAPRA)")
+# calibration_curve_bcr_5years_capra = calibration_curve.plot_calibration_curve(
+#     outcome=Outcomes.BCR_5YEARS.name,
+#     reverse_outcome=True
+# )
 
 # ----------------------------------------------------------------------------------------------------------- #
 #                                     Decision curve analysis (MSKCC)                                         #

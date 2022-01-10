@@ -24,10 +24,10 @@ class DatasetLoader:
         dataset = dataset[dataset["pN"] != "pNx"]
         dataset = dataset[dataset["pN"] != "n/d"]
 
-        dataset["Récurrence 5 ans (60 mois), oui = 1; non =0"].fillna(0, inplace=True)
-        dataset["Récurrence 10 ans (120 mois), oui = 1; non =0"].fillna(0, inplace=True)
-        mask_5years_reccurence = dataset["Récurrence 5 ans (60 mois), oui = 1; non =0"]
-        mask_10years_reccurence = dataset["Récurrence 10 ans (120 mois), oui = 1; non =0"]
-        dataset["Récurrence 10 ans (120 mois), oui = 1; non =0"] = mask_5years_reccurence + mask_10years_reccurence
+        dataset["Récurrence 5 ans (60 mois) oui = 1 non =0"].fillna(0, inplace=True)
+        dataset["Récurrence 10 ans (120 mois) oui = 1; non =0"].fillna(0, inplace=True)
+        mask_5years_reccurence = dataset["Récurrence 5 ans (60 mois) oui = 1 non =0"]
+        mask_10years_reccurence = dataset["Récurrence 10 ans (120 mois) oui = 1; non =0"]
+        dataset["Récurrence 10 ans (120 mois) oui = 1; non =0"] = mask_5years_reccurence + mask_10years_reccurence
 
         return dataset

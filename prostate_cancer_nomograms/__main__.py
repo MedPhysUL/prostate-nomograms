@@ -16,7 +16,7 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                Constant                                                     #
     # ----------------------------------------------------------------------------------------------------------- #
-    DATASET_NAME = "fake_dataset.xlsx"
+    DATASET_NAME = "PR_BiospieG8_FDGTEP_PréOp_2012-06-16_POUR STATISTICIEN.xlsx"
     RESULTS_NAME_CAPRA_ONLY = "CAPRA_results.csv"
     RESULTS_NAME_CORES_DEPENDANT = "CORES_DEPENDENT_results.csv"
     RESULTS_NAME_CORES_INDEPENDENT = "CORES_INDEPENDENT_results.csv"
@@ -45,15 +45,21 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                  Data                                                       #
     # ----------------------------------------------------------------------------------------------------------- #
-    patient_dataframe: pd.DataFrame = pd.read_excel(os.path.join(PATH_TO_DATA_FOLDER, DATASET_NAME))
+    patient_dataframe: pd.DataFrame = pd.read_excel(os.path.join(PATH_TO_DATA_FOLDER, DATASET_NAME),
+                                                    sheet_name="POUR STATISTICIEN (FDG_TEP)")
+    og_df = deepcopy(patient_dataframe)
 
     if CLEAN_DATAFRAME:
         patient_dataframe.dropna(subset=["Stade clinique"], inplace=True)
         patient_dataframe = patient_dataframe[patient_dataframe["Stade clinique"] != "n/d"]
+        patient_dataframe = patient_dataframe[patient_dataframe["Stade clinique"] != "Tx"]
+        patient_dataframe.dropna(subset=["PSA au diagnostique"], inplace=True)
 
     clean_cores_patient_dataframe = deepcopy(patient_dataframe[patient_dataframe["NbCtePositive"] != "N.D."])
     clean_cores_patient_dataframe = \
         clean_cores_patient_dataframe[clean_cores_patient_dataframe["NbCteNegative"] != "N.D."]
+    clean_cores_patient_dataframe.dropna(subset=["NbCtePositive"], inplace=True)
+    clean_cores_patient_dataframe.dropna(subset=["NbCteNegative"], inplace=True)
 
     mskcc_allowed_patient_dataframe = deepcopy(patient_dataframe[patient_dataframe["À exclure du MSKCC (oui =1, non=0)"] == 0])
     mskcc_allowed_clean_cores_patient_dataframe = deepcopy(
@@ -136,11 +142,14 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                  Results                                                    #
     # ----------------------------------------------------------------------------------------------------------- #
+    # mskcc_allowed_patient_dataframe = pd.concat([og_df, mskcc_allowed_patient_dataframe], axis=1)
+    # mskcc_allowed_clean_cores_patient_dataframe = pd.concat([og_df, mskcc_allowed_clean_cores_patient_dataframe], axis=1)
+
     mskcc_allowed_patient_dataframe.to_csv(path_or_buf=os.path.join(PATH_TO_DATA_FOLDER, RESULTS_NAME_CORES_INDEPENDENT))
     mskcc_allowed_clean_cores_patient_dataframe.to_csv(path_or_buf=os.path.join(PATH_TO_DATA_FOLDER, RESULTS_NAME_CORES_DEPENDANT))
 
     # ----------------------------------------------------------------------------------------------------------- #
     #                                     Statistics and Performance Evaluation                                   #
     # ----------------------------------------------------------------------------------------------------------- #
-    import prostate_cancer_nomograms.statistical_analysis.main_statistical_analysis
+    # import prostate_cancer_nomograms.statistical_analysis.main_statistical_analysis
 
