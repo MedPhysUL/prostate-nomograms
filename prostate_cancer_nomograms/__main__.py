@@ -42,7 +42,9 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                  Data                                                       #
     # ----------------------------------------------------------------------------------------------------------- #
-    patient_dataframe: pd.DataFrame = pd.read_excel(os.path.join(PATH_TO_DATA_FOLDER, DATASET_NAME))
+    patient_dataframe: pd.DataFrame = pd.read_excel(os.path.join(PATH_TO_DATA_FOLDER, DATASET_NAME),
+                                                    sheet_name="POUR STATISTICIEN (FDG_TEP)")
+    og_df = deepcopy(patient_dataframe)
 
     mskcc_allowed_patient_dataframe = deepcopy(patient_dataframe[patient_dataframe["À exclure du MSKCC (oui =1, non=0)"] == 0])
     mskcc_allowed_clean_cores_patient_dataframe = deepcopy(
