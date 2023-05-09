@@ -11,7 +11,7 @@ class SurvivalRegression(LogisticRegression):
     def get_predicted_survival_probability(
             self,
             dataframe: pd.DataFrame,
-            number_of_years: Union[np.ndarray, list, float, int]
+            number_of_months: Union[np.ndarray, list, float, int]
     ) -> np.array:
         """
         Gets the predicted result.
@@ -20,7 +20,7 @@ class SurvivalRegression(LogisticRegression):
         ----------
         dataframe : pandas.DataFrame
             The dataframe that contains the patients data.
-        number_of_years : Union[numpy.ndarray, list, float, int]
+        number_of_months : Union[numpy.ndarray, list, float, int]
             The number of years.
 
         Returns
@@ -32,6 +32,6 @@ class SurvivalRegression(LogisticRegression):
         scaling_parameter = self.variables_coefficients["Scaling Parameter"]
 
         num = 1 + (np.exp(-predicted_result) * 0) ** (1 / scaling_parameter)
-        denum = 1 + (np.exp(-predicted_result) * number_of_years) ** (1 / scaling_parameter)
+        denum = 1 + (np.exp(-predicted_result) * number_of_months/12) ** (1 / scaling_parameter)
 
         return num/denum

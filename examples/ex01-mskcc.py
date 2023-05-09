@@ -25,14 +25,14 @@ if __name__ == "__main__":
     GLEASON_PRIMARY_COLUMN = "GLEASON_PRIMARY"
     GLEASON_SECONDARY_COLUMN = "GLEASON_SECONDARY"
 
-    NUMBER_OF_YEARS = [5, 10]
+    NUMBER_OF_MONTHS = [60, 120]
 
     OUTCOMES = [
         Outcome.PREOPERATIVE_BCR,
         Outcome.EXTRACAPSULAR_EXTENSION,
         Outcome.LYMPH_NODE_INVOLVEMENT,
-        Outcome.ORGAN_CONFINED_DISEASE,
         Outcome.SEMINAL_VESICLE_INVASION,
+        # Outcome.ORGAN_CONFINED_DISEASE,
         # Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
     ]
 
@@ -53,9 +53,9 @@ if __name__ == "__main__":
     for outcome in OUTCOMES:
         mskcc_model = MSKCCPreRadicalProstatectomyModel(outcome=outcome)
         if outcome in SURVIVAL_OUTCOMES:
-            for number_of_years in NUMBER_OF_YEARS:
-                column_name = f"{outcome}_{number_of_years}_years"
-                dataframe[column_name] = mskcc_model.predict_proba(dataframe, number_of_years)
+            for number_of_months in NUMBER_OF_MONTHS:
+                column_name = f"{outcome}_{number_of_months}_months"
+                dataframe[column_name] = mskcc_model.predict_proba(dataframe, number_of_months)
         else:
             dataframe[outcome] = mskcc_model.predict_proba(dataframe)
 

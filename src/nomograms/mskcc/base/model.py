@@ -170,7 +170,7 @@ class Model:
     def predict_proba(
             self,
             dataframe: pd.DataFrame,
-            number_of_years: Union[np.ndarray, list, float, int] = None
+            number_of_months: Union[np.ndarray, list, float, int] = None
     ) -> np.ndarray:
         """
         Gets the predictions. If the model is survival, the number of years must be given.
@@ -179,8 +179,8 @@ class Model:
         ----------
         dataframe : pandas.DataFrame
             The dataframe.
-        number_of_years : Union[numpy.ndarray, list, float, int], optional
-            The number of years. It is used only for survival models.
+        number_of_months : Union[numpy.ndarray, list, float, int], optional
+            The number of months. It is used only for survival models.
 
         Returns
         -------
@@ -188,10 +188,10 @@ class Model:
             The predictions.
         """
         if self.model_type == "survival":
-            if number_of_years is None:
-                raise ValueError("Number of years must be given.")
+            if number_of_months is None:
+                raise ValueError("Number of months must be given.")
             else:
-                return self.regressor.get_predicted_survival_probability(dataframe, number_of_years)
+                return self.regressor.get_predicted_survival_probability(dataframe, number_of_months)
         elif self.model_type == "logistic":
             return self.regressor.get_predicted_probability(dataframe=dataframe)
         else:
