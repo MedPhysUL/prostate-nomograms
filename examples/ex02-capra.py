@@ -13,7 +13,7 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     DATA_FOLDER_NAME = "data"
     DATASET_FILENAME = "fake_dataset.xlsx"
-    RESULTS_FILENAME = "results.csv"
+    RESULTS_FILENAME = "capra_results.csv"
     DATASET_PATH = os.path.join(DATA_FOLDER_NAME, DATASET_FILENAME)
     RESULTS_PATH = os.path.join(DATA_FOLDER_NAME, RESULTS_FILENAME)
 
@@ -33,7 +33,7 @@ if __name__ == "__main__":
         Outcome.LYMPH_NODE_INVOLVEMENT,
         Outcome.SEMINAL_VESICLE_INVASION,
         # Outcome.ORGAN_CONFINED_DISEASE,
-        # Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
+        Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
     ]
 
     SURVIVAL_OUTCOMES = [
