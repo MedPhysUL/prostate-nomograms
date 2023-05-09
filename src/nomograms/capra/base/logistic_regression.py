@@ -21,7 +21,7 @@ class LogisticRegression:
         target : numpy.ndarray
             The outcome.
         """
-        self.classifier.fit(X=capra_score, y=target)
+        self.classifier.fit(X=capra_score.reshape(-1, 1), y=target)
 
     def get_predicted_probability(
             self,
@@ -40,4 +40,4 @@ class LogisticRegression:
         predicted_probability : numpy.ndarray
             The predicted probability.
         """
-        return self.classifier.predict_proba(X=np.array(capra_score).reshape(-1, 1))[:, 1]
+        return self.classifier.predict_proba(X=capra_score.reshape(-1, 1))[:, 1]
