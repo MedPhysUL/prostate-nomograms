@@ -54,4 +54,3 @@ class MSKCCPreRadicalProstatectomyModel(Model):
             number_of_positive_cores_column_name=number_of_positive_cores_column_name,
             number_of_negative_cores_column_name=number_of_negative_cores_column_name
         )
-
