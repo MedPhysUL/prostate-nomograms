@@ -13,7 +13,7 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     DATA_FOLDER_NAME = "data"
     DATASET_FILENAME = "fake_dataset.xlsx"
-    RESULTS_FILENAME = "results.csv"
+    RESULTS_FILENAME = "mskcc_results.csv"
     DATASET_PATH = os.path.join(DATA_FOLDER_NAME, DATASET_FILENAME)
     RESULTS_PATH = os.path.join(DATA_FOLDER_NAME, RESULTS_FILENAME)
 
@@ -25,15 +25,15 @@ if __name__ == "__main__":
     GLEASON_PRIMARY_COLUMN = "GLEASON_PRIMARY"
     GLEASON_SECONDARY_COLUMN = "GLEASON_SECONDARY"
 
-    NUMBER_OF_MONTHS = [60, 120]
+    NUMBER_OF_MONTHS = [60, 120, 180]
 
     OUTCOMES = [
         Outcome.PREOPERATIVE_BCR,
         Outcome.EXTRACAPSULAR_EXTENSION,
         Outcome.LYMPH_NODE_INVOLVEMENT,
         Outcome.SEMINAL_VESICLE_INVASION,
-        # Outcome.ORGAN_CONFINED_DISEASE,
-        # Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
+        Outcome.ORGAN_CONFINED_DISEASE,
+        Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
     ]
 
     SURVIVAL_OUTCOMES = [
