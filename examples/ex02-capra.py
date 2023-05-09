@@ -25,14 +25,14 @@ if __name__ == "__main__":
     GLEASON_PRIMARY_COLUMN = "GLEASON_PRIMARY"
     GLEASON_SECONDARY_COLUMN = "GLEASON_SECONDARY"
 
-    NUMBER_OF_YEARS = [5, 10]
+    NUMBER_OF_MONTHS = [60, 120]
 
     OUTCOMES = [
         Outcome.PREOPERATIVE_BCR,
         Outcome.EXTRACAPSULAR_EXTENSION,
         Outcome.LYMPH_NODE_INVOLVEMENT,
-        Outcome.ORGAN_CONFINED_DISEASE,
         Outcome.SEMINAL_VESICLE_INVASION,
+        # Outcome.ORGAN_CONFINED_DISEASE,
         # Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
     ]
 
@@ -40,6 +40,14 @@ if __name__ == "__main__":
         Outcome.PREOPERATIVE_BCR,
         Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
     ]
+
+    COLUMNS = {
+        Outcome.PREOPERATIVE_BCR: "BCR",
+        Outcome.EXTRACAPSULAR_EXTENSION: "EE",
+        Outcome.LYMPH_NODE_INVOLVEMENT: "PN",
+        Outcome.SEMINAL_VESICLE_INVASION: "SVI",
+        Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH: "DEATH"
+    }
 
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                    Data                                                     #
@@ -49,35 +57,24 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                   CAPRA                                                     #
     # ----------------------------------------------------------------------------------------------------------- #
-    capra_model = CAPRAModel(
-        outcome=Outcome.LYMPH_NODE_INVOLVEMENT,
-        target_column_name="pN",
-        age_column_name=AGE_COLUMN,
-        psa_column_name=PSA_COLUMN,
-        clinical_stage_column_name=CLINICAL_STAGE_COLUMN,
-        primary_gleason_column_name=GLEASON_PRIMARY_COLUMN,
-        secondary_gleason_column_name=GLEASON_SECONDARY_COLUMN
-    )
-    dataframe[CAPRA_SCORE_COLUMN] = capra_model.get_capra_score(dataframe)
-
-    # for outcome in OUTCOMES:
-    #     if outcome in SURVIVAL_OUTCOMES:
-    #         capra_model = CAPRAModel(
-    #             outcome=outcome,
-    #             event_indicator_column_name=,
-    #             event_time_column_name=
-    #         )
-    #         capra_model.fit(dataframe)
-    #         for number_of_years in NUMBER_OF_YEARS:
-    #             column_name = f"{outcome}_{number_of_years}_years"
-    #             dataframe[column_name] = capra_model.predict_proba(dataframe, number_of_years)
-    #     else:
-    #         capra_model = CAPRAModel(
-    #             outcome=outcome,
-    #             target_column_name=
-    #         )
-    #         capra_model.fit(dataframe)
-    #         dataframe[outcome] = capra_model.predict_proba(dataframe)
+    for outcome in OUTCOMES:
+        if outcome in SURVIVAL_OUTCOMES:
+            capra_model = CAPRAModel(
+                outcome=outcome,
+                event_indicator_column_name=COLUMNS[outcome],
+                event_time_column_name=f"{COLUMNS[outcome]}_TIME"
+            )
+            capra_model.fit(dataframe)
+            for number_of_months in NUMBER_OF_MONTHS:
+                column_name = f"{outcome}_{number_of_months}_months"
+                dataframe[column_name] = capra_model.predict_proba(dataframe, number_of_months)
+        else:
+            capra_model = CAPRAModel(
+                outcome=outcome,
+                target_column_name=COLUMNS[outcome]
+            )
+            capra_model.fit(dataframe)
+            dataframe[outcome] = capra_model.predict_proba(dataframe)
 
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                  Results                                                    #
