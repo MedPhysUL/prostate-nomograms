@@ -43,7 +43,7 @@ class MSKCCPreRadicalProstatectomyModel(Model):
         self.outcome = Outcome(outcome)
 
         super().__init__(
-            outcome=self.outcome.value,
+            outcome=self.outcome,
             url="https://www.mskcc.org/nomograms/prostate/pre_op/coefficients",
             json_folder_path=os.path.join(os.path.dirname(__file__), "models_coefficients"),
             age_column_name=age_column_name,
