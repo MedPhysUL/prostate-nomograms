@@ -25,12 +25,13 @@ class SurvivalRegression:
         event_time : numpy.ndarray
             The event time.
         """
-        self.classifier.fit(X=capra_score, y=np.concatenate(event_indicator, event_time))
+        array = np.core.records.fromarrays((event_indicator, event_time), names="bool, float")
+        self.classifier.fit(X=capra_score.reshape(-1, 1), y=array)
 
     def get_predicted_survival_probability(
             self,
             capra_score: np.ndarray,
-            number_of_years: Union[np.ndarray, list, float, int]
+            number_of_months: Union[np.ndarray, list, float, int]
     ) -> np.array:
         """
         Gets the predicted result.
@@ -39,13 +40,17 @@ class SurvivalRegression:
         ----------
         capra_score : numpy.ndarray
             The CAPRA score.
-        number_of_years : Union[numpy.ndarray, list, float, int]
-            The number of years.
+        number_of_months : Union[numpy.ndarray, list, float, int]
+            The number of months.
 
         Returns
         -------
         predicted_probability : numpy.ndarray
             The predicted probability.
         """
-        survival_func = self.classifier.predict_survival_function(X=np.array(capra_score).reshape(-1, 1))
-        return survival_func(number_of_years)
+        survival_funcs = self.classifier.predict_survival_function(X=capra_score.reshape(-1, 1))
+        predicted_probability = []
+        for survival_func in survival_funcs:
+            predicted_probability.append(survival_func(number_of_months))
+
+        return np.array(predicted_probability)
