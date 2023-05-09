@@ -1,4 +1,5 @@
-from typing import Union
+from __future__ import annotations
+from typing import Optional, Union
 
 import pandas as pd
 import numpy as np
@@ -11,7 +12,8 @@ class SurvivalRegression(LogisticRegression):
     def get_predicted_survival_probability(
             self,
             dataframe: pd.DataFrame,
-            number_of_months: Union[np.ndarray, list, float, int]
+            number_of_months: Union[np.ndarray, list, float, int],
+            regressor_as_variable: Optional[SurvivalRegression] = None,
     ) -> np.array:
         """
         Gets the predicted result.
@@ -22,13 +24,19 @@ class SurvivalRegression(LogisticRegression):
             The dataframe that contains the patients data.
         number_of_months : Union[numpy.ndarray, list, float, int]
             The number of years.
+        regressor_as_variable : Optional[SurvivalRegression]
+            The regressor as variable.
 
         Returns
         -------
         predicted_probability : numpy.ndarray
             The predicted probability.
         """
-        predicted_result = self.get_predicted_result(dataframe)
+        if regressor_as_variable:
+            predicted_result = self.get_predicted_result(dataframe, regressor_as_variable)
+        else:
+            predicted_result = self.get_predicted_result(dataframe)
+
         scaling_parameter = self.variables_coefficients["Scaling Parameter"]
 
         num = 1 + (np.exp(-predicted_result) * 0) ** (1 / scaling_parameter)

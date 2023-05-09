@@ -1,4 +1,8 @@
-from typing import Mapping, Optional
+from __future__ import annotations
+from typing import Mapping, Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .survival_regression import SurvivalRegression
 
 import numpy as np
 import pandas as pd
@@ -143,7 +147,8 @@ class LogisticRegression:
 
     def get_predicted_result(
             self,
-            dataframe: pd.DataFrame
+            dataframe: pd.DataFrame,
+            regressor_as_variable: Optional[SurvivalRegression] = None
     ) -> np.array:
         """
         Gets the predicted result.
@@ -152,6 +157,8 @@ class LogisticRegression:
         ----------
         dataframe : pandas.DataFrame
             The dataframe that contains the patients data.
+        regressor_as_variable : Optional[SurvivalRegression]
+            The regressor as variable.
 
         Returns
         -------
@@ -160,26 +167,35 @@ class LogisticRegression:
         """
         data_dict = dataframe.to_dict(orient="list")
 
-        spline_term_1 = self._get_spline_term_1(np.array(data_dict[self.psa_column_name]))
-        spline_term_2 = self._get_spline_term_2(np.array(data_dict[self.psa_column_name]))
-
         result = self.variables_coefficients["Intercept"]
-        result += np.array(data_dict[self.psa_column_name]) * self.variables_coefficients["Preoperative PSA"]
-        result += spline_term_1 * self.variables_coefficients["Preoperative PSA Spline 1"]
-        result += spline_term_2 * self.variables_coefficients["Preoperative PSA Spline 2"]
-        result += np.array(data_dict[self.age_column_name]) * self.variables_coefficients["Patient Age"]
-        result += self._get_gleason_value(data_dict)
-        result += self._get_clinical_stage_value(data_dict)
 
-        if self.cores:
-            result += self._get_positive_cores_value(data_dict)
-            result += self._get_negative_cores_value(data_dict)
+        if regressor_as_variable:
+            keys = [k for k in self.variables_coefficients.keys() if k.startswith("Survival probability")]
+            assert len(keys) == 1, "There should be only one key that starts with 'Survival probability'"
+            coefficient = self.variables_coefficients[keys[0]]
+            result += coefficient*regressor_as_variable.get_predicted_survival_probability(dataframe, 60)
+            return result
+        else:
+            result += np.array(data_dict[self.psa_column_name]) * self.variables_coefficients["Preoperative PSA"]
 
-        return result
+            spline_term_1 = self._get_spline_term_1(np.array(data_dict[self.psa_column_name]))
+            spline_term_2 = self._get_spline_term_2(np.array(data_dict[self.psa_column_name]))
+            result += spline_term_1 * self.variables_coefficients["Preoperative PSA Spline 1"]
+            result += spline_term_2 * self.variables_coefficients["Preoperative PSA Spline 2"]
+
+            result += np.array(data_dict[self.age_column_name]) * self.variables_coefficients["Patient Age"]
+            result += self._get_gleason_value(data_dict)
+            result += self._get_clinical_stage_value(data_dict)
+
+            if self.cores:
+                result += self._get_positive_cores_value(data_dict)
+                result += self._get_negative_cores_value(data_dict)
+            return result
 
     def get_predicted_probability(
             self,
-            dataframe: pd.DataFrame
+            dataframe: pd.DataFrame,
+            regressor_as_variable: Optional[SurvivalRegression] = None
     ) -> np.array:
         """
         Gets the predicted result.
@@ -188,11 +204,13 @@ class LogisticRegression:
         ----------
         dataframe : pandas.DataFrame
             The dataframe that contains the patients data.
+        regressor_as_variable : SurvivalRegression
+            The regressor as variable.
 
         Returns
         -------
         predicted_probability : numpy.ndarray
             The predicted probability.
         """
-        predicted_result = self.get_predicted_result(dataframe)
+        predicted_result = self.get_predicted_result(dataframe, regressor_as_variable)
         return np.exp(predicted_result)/(1 + np.exp(predicted_result))

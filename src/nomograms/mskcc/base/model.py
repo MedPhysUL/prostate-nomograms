@@ -3,6 +3,7 @@ from typing import Mapping, Optional, Union
 import numpy as np
 import pandas as pd
 
+from ...enum import Outcome
 from .logistic_regression import LogisticRegression
 from .survival_regression import SurvivalRegression
 from .web_table_scraper import CoefficientCategory, WebTableScraper
@@ -50,6 +51,8 @@ class Model:
             Name of the column containing the number of negative cores of the patients.
         """
         self.outcome = outcome
+        self.url = url
+        self.json_folder_path = json_folder_path
 
         web_table_scrapper = WebTableScraper(url, json_folder_path)
         coefficients_dataframe = web_table_scrapper.get_models_coefficients(CoefficientCategory.VARIABLES)
@@ -75,6 +78,11 @@ class Model:
             number_of_positive_cores_column_name=number_of_positive_cores_column_name,
             number_of_negative_cores_column_name=number_of_negative_cores_column_name
         )
+
+        if self.is_predicting_death:
+            self._regressor_as_variable = self._create_regressor_as_variable()
+        else:
+            self._regressor_as_variable = None
 
     @staticmethod
     def _get_dict_from_two_columns_of_a_dataframe(
@@ -130,6 +138,59 @@ class Model:
         model_type = self._variables_coefficients_dataframe["Model Type"].values[0]
 
         return model_type
+
+    @property
+    def is_predicting_death(self):
+        """
+        Whether the model is predicting death or not.
+
+        Returns
+        -------
+        is_death : bool
+            Whether the model is for predicting death or not.
+        """
+        if "Death" in self.outcome:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def _map_death_model_to_bcr_outcome() -> dict:
+        """
+        Map death model to the corresponding bcr outcome used for its prediction computation.
+
+        Returns
+        -------
+        mapping : dict
+            Map from the death model to the corresponding bcr outcome.
+        """
+        return {
+            Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH: Outcome.PREOPERATIVE_BCR,
+            Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH_CORES: Outcome.PREOPERATIVE_BCR_CORES
+        }
+
+    def _create_regressor_as_variable(self) -> SurvivalRegression:
+        """
+        Creates the regressor as a variable.
+
+        Returns
+        -------
+        model : SurvivalRegression
+            The regressor as a variable.
+        """
+        outcome = self._map_death_model_to_bcr_outcome()[self.outcome]
+        return Model(
+            outcome=outcome,
+            url=self.url,
+            json_folder_path=self.json_folder_path,
+            age_column_name=self.regressor.age_column_name,
+            psa_column_name=self.regressor.psa_column_name,
+            primary_gleason_column_name=self.regressor.primary_gleason_column_name,
+            secondary_gleason_column_name=self.regressor.secondary_gleason_column_name,
+            clinical_stage_column_name=self.regressor.clinical_stage_column_name,
+            number_of_positive_cores_column_name=self.regressor.number_of_positive_cores,
+            number_of_negative_cores_column_name=self.regressor.number_of_negative_cores
+        ).regressor
 
     @property
     def variables_coefficients(self) -> Mapping[str, float]:
@@ -191,8 +252,15 @@ class Model:
             if number_of_months is None:
                 raise ValueError("Number of months must be given.")
             else:
-                return self.regressor.get_predicted_survival_probability(dataframe, number_of_months)
+                return self.regressor.get_predicted_survival_probability(
+                    dataframe,
+                    number_of_months,
+                    self._regressor_as_variable
+                )
         elif self.model_type == "logistic":
-            return self.regressor.get_predicted_probability(dataframe=dataframe)
+            return self.regressor.get_predicted_probability(
+                dataframe,
+                self._regressor_as_variable
+            )
         else:
             raise ValueError(f"Model type {self.model_type} doesn't exist.")
