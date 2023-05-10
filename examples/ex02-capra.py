@@ -32,7 +32,7 @@ if __name__ == "__main__":
         Outcome.EXTRACAPSULAR_EXTENSION,
         Outcome.LYMPH_NODE_INVOLVEMENT,
         Outcome.SEMINAL_VESICLE_INVASION,
-        # Outcome.ORGAN_CONFINED_DISEASE,
+        Outcome.ORGAN_CONFINED_DISEASE,
         Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
     ]
 
@@ -46,6 +46,7 @@ if __name__ == "__main__":
         Outcome.EXTRACAPSULAR_EXTENSION: "EE",
         Outcome.LYMPH_NODE_INVOLVEMENT: "PN",
         Outcome.SEMINAL_VESICLE_INVASION: "SVI",
+        Outcome.ORGAN_CONFINED_DISEASE: "OCD",
         Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH: "DEATH"
     }
 
