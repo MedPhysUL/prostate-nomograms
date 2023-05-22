@@ -63,7 +63,12 @@ if __name__ == "__main__":
             capra_model = CAPRAModel(
                 outcome=outcome,
                 event_indicator_column_name=COLUMNS[outcome],
-                event_time_column_name=f"{COLUMNS[outcome]}_TIME"
+                event_time_column_name=f"{COLUMNS[outcome]}_TIME",
+                age_column_name=AGE_COLUMN,
+                psa_column_name=PSA_COLUMN,
+                primary_gleason_column_name=GLEASON_PRIMARY_COLUMN,
+                secondary_gleason_column_name=GLEASON_SECONDARY_COLUMN,
+                clinical_stage_column_name=CLINICAL_STAGE_COLUMN
             )
             capra_model.fit(dataframe)
             dataframe[f"{outcome}_risk"] = capra_model.predict_risk(dataframe)

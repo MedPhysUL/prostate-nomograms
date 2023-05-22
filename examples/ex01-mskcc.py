@@ -21,7 +21,7 @@ if __name__ == "__main__":
     CAPRA_SCORE_COLUMN = "CAPRA_SCORE"
     AGE_COLUMN = "AGE"
     PSA_COLUMN = "PSA"
-    CLINICAL_STAGE_COLUMN = "CLINICAL_STAGE"
+    CLINICAL_STAGE_COLUMN = "CLINICAL_STAGE_MSKCC"
     GLEASON_PRIMARY_COLUMN = "GLEASON_PRIMARY"
     GLEASON_SECONDARY_COLUMN = "GLEASON_SECONDARY"
 
@@ -51,7 +51,14 @@ if __name__ == "__main__":
     #                                                   MSKCC                                                     #
     # ----------------------------------------------------------------------------------------------------------- #
     for outcome in OUTCOMES:
-        mskcc_model = MSKCCPreRadicalProstatectomyModel(outcome=outcome)
+        mskcc_model = MSKCCPreRadicalProstatectomyModel(
+            outcome=outcome,
+            age_column_name=AGE_COLUMN,
+            psa_column_name=PSA_COLUMN,
+            primary_gleason_column_name=GLEASON_PRIMARY_COLUMN,
+            secondary_gleason_column_name=GLEASON_SECONDARY_COLUMN,
+            clinical_stage_column_name=CLINICAL_STAGE_COLUMN
+        )
         if outcome in SURVIVAL_OUTCOMES:
             dataframe[f"{outcome}_risk"] = mskcc_model.predict_risk(dataframe)
             for number_of_months in NUMBER_OF_MONTHS:
