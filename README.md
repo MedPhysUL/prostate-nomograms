@@ -36,4 +36,3 @@ Maxence Larose, B. Ing., [maxence.larose.1@ulaval.ca](mailto:maxence.larose.1@ul
 [1]: <https://www.mskcc.org/nomograms/prostate> "MSKCC - Prostate Cancer Nomograms"
 [2]:  https://github.com/matt-black/dcapy "Matt Black's decision curve analysis library for Python"
 [3]: https://urology.ucsf.edu/research/cancer/prostate-cancer-risk-assessment-and-the-ucsf-capra-score "UCSF CAPRA - Prostate Cancer Nomograms"
-
