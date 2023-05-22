@@ -10,7 +10,11 @@ class LogisticRegression:
         """
         self.classifier = SklearnLogisticRegression()
 
-    def fit(self, capra_score: np.ndarray, target: np.ndarray):
+    def fit(
+            self,
+            capra_score: np.ndarray,
+            target: np.ndarray
+    ):
         """
         Fits the model.
 

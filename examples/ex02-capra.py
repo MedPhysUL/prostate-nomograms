@@ -66,6 +66,7 @@ if __name__ == "__main__":
                 event_time_column_name=f"{COLUMNS[outcome]}_TIME"
             )
             capra_model.fit(dataframe)
+            dataframe[f"{outcome}_risk"] = capra_model.predict_risk(dataframe)
             for number_of_months in NUMBER_OF_MONTHS:
                 column_name = f"{outcome}_{number_of_months}_months"
                 dataframe[column_name] = capra_model.predict_proba(dataframe, number_of_months)

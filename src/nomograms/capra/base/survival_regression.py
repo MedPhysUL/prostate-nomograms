@@ -12,7 +12,12 @@ class SurvivalRegression:
         """
         self.classifier = CoxPHSurvivalAnalysis()
 
-    def fit(self, capra_score: np.ndarray, event_indicator: np.ndarray, event_time: np.ndarray):
+    def fit(
+            self,
+            capra_score: np.ndarray,
+            event_indicator: np.ndarray,
+            event_time: np.ndarray
+    ):
         """
         Fits the model.
 
@@ -27,6 +32,25 @@ class SurvivalRegression:
         """
         array = np.core.records.fromarrays((event_indicator, event_time), names="bool, float")
         self.classifier.fit(X=capra_score.reshape(-1, 1), y=array)
+
+    def get_predicted_risk(
+            self,
+            capra_score: np.ndarray
+    ) -> np.array:
+        """
+        Gets the predicted risk.
+
+        Parameters
+        ----------
+        capra_score : numpy.ndarray
+            The CAPRA score.
+
+        Returns
+        -------
+        predicted_risk : numpy.ndarray
+            The predicted risk.
+        """
+        return self.classifier.predict(X=capra_score.reshape(-1, 1))
 
     def get_predicted_survival_probability(
             self,

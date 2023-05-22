@@ -311,6 +311,31 @@ class CAPRAModel:
         else:
             raise ValueError(f"Model type {self.model_type} doesn't exist.")
 
+    def predict_risk(
+            self,
+            dataframe: pd.DataFrame
+    ) -> np.ndarray:
+        """
+        Gets the risk predictions.
+
+        Parameters
+        ----------
+        dataframe : pandas.DataFrame
+            The dataframe.
+
+        Returns
+        -------
+        predictions : numpy.ndarray
+            The predictions.
+        """
+        if self.model_type == "survival":
+            capra_score = self.get_capra_score(dataframe)
+            return self.regressor.get_predicted_risk(capra_score)
+        elif self.model_type == "logistic":
+            raise ValueError("Logistic models don't have risk predictions.")
+        else:
+            raise ValueError(f"Model type {self.model_type} doesn't exist.")
+
     def show_histogram(self, dataframe: pd.DataFrame) -> None:
         """
         Shows the histogram of the CAPRA score.

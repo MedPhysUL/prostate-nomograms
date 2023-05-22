@@ -53,6 +53,7 @@ if __name__ == "__main__":
     for outcome in OUTCOMES:
         mskcc_model = MSKCCPreRadicalProstatectomyModel(outcome=outcome)
         if outcome in SURVIVAL_OUTCOMES:
+            dataframe[f"{outcome}_risk"] = mskcc_model.predict_risk(dataframe)
             for number_of_months in NUMBER_OF_MONTHS:
                 column_name = f"{outcome}_{number_of_months}_months"
                 dataframe[column_name] = mskcc_model.predict_proba(dataframe, number_of_months)

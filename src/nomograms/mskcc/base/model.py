@@ -264,3 +264,27 @@ class Model:
             )
         else:
             raise ValueError(f"Model type {self.model_type} doesn't exist.")
+
+    def predict_risk(
+            self,
+            dataframe: pd.DataFrame
+    ) -> np.ndarray:
+        """
+        Gets the risk predictions.
+
+        Parameters
+        ----------
+        dataframe : pandas.DataFrame
+            The dataframe.
+
+        Returns
+        -------
+        predictions : numpy.ndarray
+            The predictions.
+        """
+        if self.model_type == "survival":
+            return self.regressor.get_predicted_risk(dataframe, self._regressor_as_variable)
+        elif self.model_type == "logistic":
+            raise ValueError("Logistic models don't have risk predictions.")
+        else:
+            raise ValueError(f"Model type {self.model_type} doesn't exist.")
