@@ -4,7 +4,7 @@ import os
 
 import pandas as pd
 
-from src.nomograms import CAPRAModel, Outcome
+from src import CAPRAModel, Outcome
 
 
 if __name__ == "__main__":

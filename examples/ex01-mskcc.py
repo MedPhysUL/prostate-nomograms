@@ -4,7 +4,7 @@ import os
 
 import pandas as pd
 
-from src.nomograms import MSKCCPreRadicalProstatectomyModel, Outcome
+from src import MSKCCPreRadicalProstatectomyModel, Outcome
 
 
 if __name__ == "__main__":
