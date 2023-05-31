@@ -17,7 +17,6 @@ if __name__ == "__main__":
     DATASET_PATH = os.path.join(DATA_FOLDER_NAME, DATASET_FILENAME)
     RESULTS_PATH = os.path.join(DATA_FOLDER_NAME, RESULTS_FILENAME)
 
-    MSKCC_EXCLUDED_COLUMN = "MSKCC_EXCLUDED"
     AGE_COLUMN = "AGE"
     PSA_COLUMN = "PSA"
     CLINICAL_STAGE_COLUMN = "CLINICAL_STAGE"
@@ -63,17 +62,14 @@ if __name__ == "__main__":
                 clinical_stage_column_name=CLINICAL_STAGE_COLUMN
             )
             custom_nomogram.fit(dataframe)
-            dataframe[f"{outcome}_risk"] = custom_nomogram.predict_risk(dataframe)
+            dataframe[f"PREDICTED_{outcome.name}_RISK"] = custom_nomogram.predict_risk(dataframe)
             for number_of_months in NUMBER_OF_MONTHS:
-                column_name = f"{outcome}_{number_of_months}_months"
+                column_name = f"PREDICTED_{outcome.name}_{number_of_months}MONTHS"
                 dataframe[column_name] = custom_nomogram.predict_proba(dataframe, number_of_months)
         else:
-            custom_nomogram = CustomNomogram(
-                outcome=outcome,
-                target_column_name=col_name
-            )
+            custom_nomogram = CustomNomogram(outcome=outcome,target_column_name=col_name)
             custom_nomogram.fit(dataframe)
-            dataframe[outcome] = custom_nomogram.predict_proba(dataframe)
+            dataframe[f"PREDICTED_{outcome.name}"] = custom_nomogram.predict_proba(dataframe)
 
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                  Results                                                    #

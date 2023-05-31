@@ -59,12 +59,12 @@ if __name__ == "__main__":
             clinical_stage_column_name=CLINICAL_STAGE_COLUMN
         )
         if outcome in SURVIVAL_OUTCOMES:
-            dataframe[f"{outcome}_risk"] = mskcc_nomogram.predict_risk(dataframe)
+            dataframe[f"PREDICTED_{outcome.name}_RISK"] = mskcc_nomogram.predict_risk(dataframe)
             for number_of_months in NUMBER_OF_MONTHS:
-                column_name = f"{outcome}_{number_of_months}_months"
+                column_name = f"PREDICTED_{outcome.name}_{number_of_months}MONTHS"
                 dataframe[column_name] = mskcc_nomogram.predict_proba(dataframe, number_of_months)
         else:
-            dataframe[outcome] = mskcc_nomogram.predict_proba(dataframe)
+            dataframe[f"PREDICTED_{outcome.name}"] = mskcc_nomogram.predict_proba(dataframe)
 
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                  Results                                                    #

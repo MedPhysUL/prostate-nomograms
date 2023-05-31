@@ -60,17 +60,14 @@ if __name__ == "__main__":
                 clinical_stage_column_name=CLINICAL_STAGE_COLUMN
             )
             capra_nomogram.fit(dataframe)
-            dataframe[f"{outcome}_risk"] = capra_nomogram.predict_risk(dataframe)
+            dataframe[f"PREDICTED_{outcome.name}_RISK"] = capra_nomogram.predict_risk(dataframe)
             for number_of_months in NUMBER_OF_MONTHS:
-                column_name = f"{outcome}_{number_of_months}_months"
+                column_name = f"PREDICTED_{outcome.name}_{number_of_months}MONTHS"
                 dataframe[column_name] = capra_nomogram.predict_proba(dataframe, number_of_months)
         else:
-            capra_nomogram = CAPRANomogram(
-                outcome=outcome,
-                target_column_name=col_name
-            )
+            capra_nomogram = CAPRANomogram(outcome=outcome, target_column_name=col_name)
             capra_nomogram.fit(dataframe)
-            dataframe[outcome] = capra_nomogram.predict_proba(dataframe)
+            dataframe[f"PREDICTED_{outcome.name}"] = capra_nomogram.predict_proba(dataframe)
 
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                  Results                                                    #
