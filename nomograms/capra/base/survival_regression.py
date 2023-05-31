@@ -6,7 +6,7 @@ from sksurv.linear_model import CoxPHSurvivalAnalysis
 
 class SurvivalRegression:
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """
         Logistic regression.
         """

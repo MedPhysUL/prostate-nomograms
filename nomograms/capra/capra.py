@@ -26,6 +26,7 @@ class CAPRAModel:
             secondary_gleason_column_name: str = "GLEASON_SECONDARY",
             clinical_stage_column_name: str = "CLINICAL_STAGE",
             positive_cores_percentage_column_name: Optional[str] = None,
+            random_state: int = 0
     ):
         """
         Initializes columns names.
@@ -46,6 +47,8 @@ class CAPRAModel:
             Name of the column containing the clinical stage of the patients.
         positive_cores_percentage_column_name : str, optional
             Name of the column containing the number of positive cores of the patients.
+        random_state : int, optional
+            Random state.
         """
         self.outcome = Outcome(outcome)
         self.target_column_name = target_column_name
@@ -75,7 +78,7 @@ class CAPRAModel:
         else:
             raise ValueError(f"Unknown model type: {self.model_type}")
 
-        self.regressor = regressor_constructor()
+        self.regressor = regressor_constructor(random_state=random_state)
 
     @property
     def model_type(self) -> str:

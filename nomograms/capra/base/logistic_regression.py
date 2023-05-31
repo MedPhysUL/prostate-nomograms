@@ -4,11 +4,16 @@ from sklearn.linear_model import LogisticRegression as SklearnLogisticRegression
 
 class LogisticRegression:
 
-    def __init__(self):
+    def __init__(self, random_state: int = 0):
         """
         Logistic regression.
+
+        Parameters
+        ----------
+        random_state : int
+            The random state.
         """
-        self.classifier = SklearnLogisticRegression()
+        self.classifier = SklearnLogisticRegression(random_state=random_state)
 
     def fit(
             self,
