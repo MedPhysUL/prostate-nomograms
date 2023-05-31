@@ -27,21 +27,7 @@ if __name__ == "__main__":
 
     NUMBER_OF_MONTHS = [60, 120]
 
-    OUTCOMES = [
-        Outcome.PREOPERATIVE_BCR,
-        Outcome.EXTRACAPSULAR_EXTENSION,
-        Outcome.LYMPH_NODE_INVOLVEMENT,
-        Outcome.SEMINAL_VESICLE_INVASION,
-        Outcome.ORGAN_CONFINED_DISEASE,
-        Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
-    ]
-
-    SURVIVAL_OUTCOMES = [
-        Outcome.PREOPERATIVE_BCR,
-        Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
-    ]
-
-    COLUMNS = {
+    OUTCOMES = {
         Outcome.PREOPERATIVE_BCR: "BCR",
         Outcome.EXTRACAPSULAR_EXTENSION: "EE",
         Outcome.LYMPH_NODE_INVOLVEMENT: "PN",
@@ -49,6 +35,11 @@ if __name__ == "__main__":
         Outcome.ORGAN_CONFINED_DISEASE: "OCD",
         Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH: "DEATH"
     }
+
+    SURVIVAL_OUTCOMES = [
+        Outcome.PREOPERATIVE_BCR,
+        Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
+    ]
 
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                    Data                                                     #
@@ -58,12 +49,12 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                   CAPRA                                                     #
     # ----------------------------------------------------------------------------------------------------------- #
-    for outcome in OUTCOMES:
+    for outcome, col_name in OUTCOMES.items():
         if outcome in SURVIVAL_OUTCOMES:
             capra_model = CAPRAModel(
                 outcome=outcome,
-                event_indicator_column_name=COLUMNS[outcome],
-                event_time_column_name=f"{COLUMNS[outcome]}_TIME",
+                event_indicator_column_name=col_name,
+                event_time_column_name=f"{col_name}_TIME",
                 age_column_name=AGE_COLUMN,
                 psa_column_name=PSA_COLUMN,
                 primary_gleason_column_name=GLEASON_PRIMARY_COLUMN,
@@ -78,7 +69,7 @@ if __name__ == "__main__":
         else:
             capra_model = CAPRAModel(
                 outcome=outcome,
-                target_column_name=COLUMNS[outcome]
+                target_column_name=col_name
             )
             capra_model.fit(dataframe)
             dataframe[outcome] = capra_model.predict_proba(dataframe)
