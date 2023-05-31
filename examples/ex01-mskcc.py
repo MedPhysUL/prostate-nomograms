@@ -13,7 +13,7 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     DATA_FOLDER_NAME = "data"
     DATASET_FILENAME = "fake_dataset.xlsx"
-    RESULTS_FILENAME = "mskcc_results.csv"
+    RESULTS_FILENAME = "results_mskcc.csv"
     DATASET_PATH = os.path.join(DATA_FOLDER_NAME, DATASET_FILENAME)
     RESULTS_PATH = os.path.join(DATA_FOLDER_NAME, RESULTS_FILENAME)
 
