@@ -49,7 +49,7 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     for outcome, col_name in OUTCOMES.items():
         if outcome in SURVIVAL_OUTCOMES:
-            capra_model = CAPRANomogram(
+            capra_nomogram = CAPRANomogram(
                 outcome=outcome,
                 event_indicator_column_name=col_name,
                 event_time_column_name=f"{col_name}_TIME",
@@ -59,18 +59,18 @@ if __name__ == "__main__":
                 secondary_gleason_column_name=GLEASON_SECONDARY_COLUMN,
                 clinical_stage_column_name=CLINICAL_STAGE_COLUMN
             )
-            capra_model.fit(dataframe)
-            dataframe[f"{outcome}_risk"] = capra_model.predict_risk(dataframe)
+            capra_nomogram.fit(dataframe)
+            dataframe[f"{outcome}_risk"] = capra_nomogram.predict_risk(dataframe)
             for number_of_months in NUMBER_OF_MONTHS:
                 column_name = f"{outcome}_{number_of_months}_months"
-                dataframe[column_name] = capra_model.predict_proba(dataframe, number_of_months)
+                dataframe[column_name] = capra_nomogram.predict_proba(dataframe, number_of_months)
         else:
-            capra_model = CAPRANomogram(
+            capra_nomogram = CAPRANomogram(
                 outcome=outcome,
                 target_column_name=col_name
             )
-            capra_model.fit(dataframe)
-            dataframe[outcome] = capra_model.predict_proba(dataframe)
+            capra_nomogram.fit(dataframe)
+            dataframe[outcome] = capra_nomogram.predict_proba(dataframe)
 
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                  Results                                                    #

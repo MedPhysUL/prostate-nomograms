@@ -51,7 +51,7 @@ if __name__ == "__main__":
     #                                                   MSKCC                                                     #
     # ----------------------------------------------------------------------------------------------------------- #
     for outcome in OUTCOMES:
-        mskcc_model = MSKCCPreRadicalProstatectomyNomogram(
+        mskcc_nomogram = MSKCCPreRadicalProstatectomyNomogram(
             outcome=outcome,
             age_column_name=AGE_COLUMN,
             psa_column_name=PSA_COLUMN,
@@ -60,12 +60,12 @@ if __name__ == "__main__":
             clinical_stage_column_name=CLINICAL_STAGE_COLUMN
         )
         if outcome in SURVIVAL_OUTCOMES:
-            dataframe[f"{outcome}_risk"] = mskcc_model.predict_risk(dataframe)
+            dataframe[f"{outcome}_risk"] = mskcc_nomogram.predict_risk(dataframe)
             for number_of_months in NUMBER_OF_MONTHS:
                 column_name = f"{outcome}_{number_of_months}_months"
-                dataframe[column_name] = mskcc_model.predict_proba(dataframe, number_of_months)
+                dataframe[column_name] = mskcc_nomogram.predict_proba(dataframe, number_of_months)
         else:
-            dataframe[outcome] = mskcc_model.predict_proba(dataframe)
+            dataframe[outcome] = mskcc_nomogram.predict_proba(dataframe)
 
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                  Results                                                    #
