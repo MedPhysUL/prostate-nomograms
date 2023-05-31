@@ -1,3 +1,3 @@
-from .capra import CAPRAModel
-from .mskcc import MSKCCPreRadicalProstatectomyModel
+from .capra import CAPRANomogram
+from .mskcc import MSKCCPreRadicalProstatectomyNomogram
 from .enum import Outcome

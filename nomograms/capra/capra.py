@@ -8,7 +8,7 @@ from ..enum import Outcome, SurvivalOutcome
 from .base import LogisticRegression, SurvivalRegression
 
 
-class CAPRAModel:
+class CAPRANomogram:
     """
     CAPRA nomogram. See
     https://urology.ucsf.edu/research/cancer/prostate-cancer-risk-assessment-and-the-ucsf-capra-score.

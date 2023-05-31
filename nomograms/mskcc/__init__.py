@@ -1,1 +1,1 @@
-from .pre_radical_prostatectomy_model import MSKCCPreRadicalProstatectomyModel
+from .pre_radical_prostatectomy_nomogram import MSKCCPreRadicalProstatectomyNomogram

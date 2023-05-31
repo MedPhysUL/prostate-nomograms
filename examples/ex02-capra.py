@@ -4,7 +4,7 @@ import os
 
 import pandas as pd
 
-from nomograms import CAPRAModel, Outcome
+from nomograms import CAPRANomogram, Outcome
 
 
 if __name__ == "__main__":
@@ -51,7 +51,7 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------- #
     for outcome, col_name in OUTCOMES.items():
         if outcome in SURVIVAL_OUTCOMES:
-            capra_model = CAPRAModel(
+            capra_model = CAPRANomogram(
                 outcome=outcome,
                 event_indicator_column_name=col_name,
                 event_time_column_name=f"{col_name}_TIME",
@@ -67,7 +67,7 @@ if __name__ == "__main__":
                 column_name = f"{outcome}_{number_of_months}_months"
                 dataframe[column_name] = capra_model.predict_proba(dataframe, number_of_months)
         else:
-            capra_model = CAPRAModel(
+            capra_model = CAPRANomogram(
                 outcome=outcome,
                 target_column_name=col_name
             )
