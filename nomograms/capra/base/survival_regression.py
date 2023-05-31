@@ -1,7 +1,7 @@
 from typing import Union
 
 import numpy as np
-from sksurv.linear_model import CoxPHSurvivalAnalysis
+from sksurv.linear_model import CoxnetSurvivalAnalysis
 
 
 class SurvivalRegression:
@@ -10,7 +10,7 @@ class SurvivalRegression:
         """
         Logistic regression.
         """
-        self.classifier = CoxPHSurvivalAnalysis()
+        self.classifier = CoxnetSurvivalAnalysis()
 
     def fit(
             self,
