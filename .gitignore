@@ -134,3 +134,4 @@ dmypy.json
 # Data
 */data/*
 !*/data/fake_dataset.xlsx
+!*/data/fake_dataset_numerical.xlsx
