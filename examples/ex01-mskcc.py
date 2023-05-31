@@ -27,11 +27,11 @@ if __name__ == "__main__":
     NUMBER_OF_MONTHS = [60, 120, 180]
 
     OUTCOMES = [
-        SurvivalOutcome.PREOPERATIVE_BCR,
         ClassificationOutcome.EXTRACAPSULAR_EXTENSION,
         ClassificationOutcome.LYMPH_NODE_INVOLVEMENT,
         ClassificationOutcome.SEMINAL_VESICLE_INVASION,
         ClassificationOutcome.ORGAN_CONFINED_DISEASE,
+        SurvivalOutcome.PREOPERATIVE_BCR,
         SurvivalOutcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
     ]
 
