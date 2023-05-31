@@ -35,6 +35,12 @@ class CAPRAModel:
         ----------
         outcome : Optional[Union[str, Outcome]]
             Name of the outcome.
+        target_column_name : Optional[str]
+            Name of the column containing the target of the patients.
+        event_indicator_column_name : Optional[str]
+            Name of the column containing the event indicator of the patients.
+        event_time_column_name : Optional[str]
+            Name of the column containing the event time of the patients.
         age_column_name : str
             Name of the column containing the age of the patients.
         psa_column_name : str
