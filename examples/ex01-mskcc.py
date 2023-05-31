@@ -4,7 +4,7 @@ import os
 
 import pandas as pd
 
-from nomograms import MSKCCPreRadicalProstatectomyNomogram, Outcome
+from nomograms import MSKCCPreRadicalProstatectomyNomogram, ClassificationOutcome, SurvivalOutcome
 
 
 if __name__ == "__main__":
@@ -27,17 +27,12 @@ if __name__ == "__main__":
     NUMBER_OF_MONTHS = [60, 120, 180]
 
     OUTCOMES = [
-        Outcome.PREOPERATIVE_BCR,
-        Outcome.EXTRACAPSULAR_EXTENSION,
-        Outcome.LYMPH_NODE_INVOLVEMENT,
-        Outcome.SEMINAL_VESICLE_INVASION,
-        Outcome.ORGAN_CONFINED_DISEASE,
-        Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
-    ]
-
-    SURVIVAL_OUTCOMES = [
-        Outcome.PREOPERATIVE_BCR,
-        Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
+        SurvivalOutcome.PREOPERATIVE_BCR,
+        ClassificationOutcome.EXTRACAPSULAR_EXTENSION,
+        ClassificationOutcome.LYMPH_NODE_INVOLVEMENT,
+        ClassificationOutcome.SEMINAL_VESICLE_INVASION,
+        ClassificationOutcome.ORGAN_CONFINED_DISEASE,
+        SurvivalOutcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
     ]
 
     # ----------------------------------------------------------------------------------------------------------- #
@@ -58,7 +53,8 @@ if __name__ == "__main__":
             secondary_gleason_column_name=GLEASON_SECONDARY_COLUMN,
             clinical_stage_column_name=CLINICAL_STAGE_COLUMN
         )
-        if outcome in SURVIVAL_OUTCOMES:
+
+        if outcome in SurvivalOutcome:
             dataframe[f"PREDICTED_{outcome.name}_RISK"] = mskcc_nomogram.predict_risk(dataframe)
             for number_of_months in NUMBER_OF_MONTHS:
                 column_name = f"PREDICTED_{outcome.name}_{number_of_months}MONTHS"

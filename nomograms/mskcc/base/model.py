@@ -3,7 +3,7 @@ from typing import Mapping, Optional, Union
 import numpy as np
 import pandas as pd
 
-from ...enum import Outcome
+from ...enum import SurvivalOutcome
 from .logistic_regression import LogisticRegression
 from .survival_regression import SurvivalRegression
 from .web_table_scraper import CoefficientCategory, WebTableScraper
@@ -165,8 +165,8 @@ class Model:
             Map from the death model to the corresponding bcr outcome.
         """
         return {
-            Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH: Outcome.PREOPERATIVE_BCR,
-            Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH_CORES: Outcome.PREOPERATIVE_BCR_CORES
+            SurvivalOutcome.PREOPERATIVE_PROSTATE_CANCER_DEATH: SurvivalOutcome.PREOPERATIVE_BCR,
+            SurvivalOutcome.PREOPERATIVE_PROSTATE_CANCER_DEATH_CORES: SurvivalOutcome.PREOPERATIVE_BCR_CORES
         }
 
     def _create_regressor_as_variable(self) -> SurvivalRegression:

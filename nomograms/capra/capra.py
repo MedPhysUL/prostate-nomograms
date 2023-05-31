@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-from ..enum import Outcome, SurvivalOutcome
+from ..enum import ClassificationOutcome, SurvivalOutcome
 from .base import LogisticRegression, SurvivalRegression
 
 
@@ -16,7 +16,7 @@ class CAPRANomogram:
 
     def __init__(
             self,
-            outcome: Union[str, Outcome],
+            outcome: Union[str, ClassificationOutcome, SurvivalOutcome],
             target_column_name: Optional[str] = None,
             event_indicator_column_name: Optional[str] = None,
             event_time_column_name: Optional[str] = None,
@@ -56,7 +56,13 @@ class CAPRANomogram:
         random_state : int, optional
             Random state.
         """
-        self.outcome = Outcome(outcome)
+        if outcome in ClassificationOutcome:
+            self.outcome = ClassificationOutcome(outcome)
+        elif outcome in SurvivalOutcome:
+            self.outcome = SurvivalOutcome(outcome)
+        else:
+            raise ValueError(f"Invalid outcome: {outcome}")
+
         self.target_column_name = target_column_name
         self.event_indicator_column_name = event_indicator_column_name
         self.event_time_column_name = event_time_column_name

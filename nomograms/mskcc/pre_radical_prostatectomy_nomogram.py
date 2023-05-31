@@ -2,14 +2,14 @@ import os
 from typing import Optional, Union
 
 from .base import Model
-from ..enum import Outcome
+from ..enum import ClassificationOutcome, SurvivalOutcome
 
 
 class MSKCCPreRadicalProstatectomyNomogram(Model):
 
     def __init__(
             self,
-            outcome: Union[str, Outcome],
+            outcome: Union[str, ClassificationOutcome, SurvivalOutcome],
             age_column_name: str = "AGE",
             psa_column_name: str = "PSA",
             primary_gleason_column_name: str = "GLEASON_PRIMARY",
@@ -23,7 +23,7 @@ class MSKCCPreRadicalProstatectomyNomogram(Model):
 
         Parameters
         ----------
-        outcome : str
+        outcome : Union[str, ClassificationOutcome, SurvivalOutcome]
             Name of the outcome.
         age_column_name : str
             Name of the column containing the age of the patients.
@@ -40,7 +40,12 @@ class MSKCCPreRadicalProstatectomyNomogram(Model):
         number_of_negative_cores_column_name : str, optional
             Name of the column containing the number of negative cores of the patients.
         """
-        self.outcome = Outcome(outcome)
+        if outcome in ClassificationOutcome:
+            self.outcome = ClassificationOutcome(outcome)
+        elif outcome in SurvivalOutcome:
+            self.outcome = SurvivalOutcome(outcome)
+        else:
+            raise ValueError(f"Invalid outcome: {outcome}")
 
         super().__init__(
             outcome=self.outcome,

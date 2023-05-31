@@ -4,7 +4,7 @@ import os
 
 import pandas as pd
 
-from nomograms import CustomNomogram, Outcome
+from nomograms import CustomNomogram, ClassificationOutcome, SurvivalOutcome
 
 
 if __name__ == "__main__":
@@ -27,18 +27,13 @@ if __name__ == "__main__":
     NUMBER_OF_MONTHS = [60, 120]
 
     OUTCOMES = {
-        Outcome.PREOPERATIVE_BCR: "BCR",
-        Outcome.EXTRACAPSULAR_EXTENSION: "EE",
-        Outcome.LYMPH_NODE_INVOLVEMENT: "PN",
-        Outcome.SEMINAL_VESICLE_INVASION: "SVI",
-        Outcome.ORGAN_CONFINED_DISEASE: "OCD",
-        Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH: "DEATH"
+        SurvivalOutcome.PREOPERATIVE_BCR: "BCR",
+        ClassificationOutcome.EXTRACAPSULAR_EXTENSION: "EE",
+        ClassificationOutcome.LYMPH_NODE_INVOLVEMENT: "PN",
+        ClassificationOutcome.SEMINAL_VESICLE_INVASION: "SVI",
+        ClassificationOutcome.ORGAN_CONFINED_DISEASE: "OCD",
+        SurvivalOutcome.PREOPERATIVE_PROSTATE_CANCER_DEATH: "DEATH"
     }
-
-    SURVIVAL_OUTCOMES = [
-        Outcome.PREOPERATIVE_BCR,
-        Outcome.PREOPERATIVE_PROSTATE_CANCER_DEATH
-    ]
 
     # ----------------------------------------------------------------------------------------------------------- #
     #                                                    Data                                                     #
@@ -49,7 +44,7 @@ if __name__ == "__main__":
     #                                                   Custom                                                    #
     # ----------------------------------------------------------------------------------------------------------- #
     for outcome, col_name in OUTCOMES.items():
-        if outcome in SURVIVAL_OUTCOMES:
+        if outcome in SurvivalOutcome:
             custom_nomogram = CustomNomogram(
                 outcome=outcome,
                 event_indicator_column_name=col_name,
