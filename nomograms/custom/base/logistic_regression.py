@@ -13,7 +13,7 @@ class LogisticRegression:
         random_state : int
             The random state.
         """
-        self.classifier = SklearnLogisticRegression(random_state=random_state)
+        self.classifier = SklearnLogisticRegression(class_weight="balanced", random_state=random_state)
 
     def fit(
             self,
