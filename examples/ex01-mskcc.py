@@ -4,7 +4,7 @@ import os
 
 import pandas as pd
 
-from nomograms import MskccPreRadicalProstatectomyNomogram, ClassificationOutcome, SurvivalOutcome
+from prostate_nomograms import MskccPreRadicalProstatectomyNomogram, ClassificationOutcome, SurvivalOutcome
 
 
 if __name__ == "__main__":
