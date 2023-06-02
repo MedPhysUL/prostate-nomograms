@@ -4,7 +4,7 @@ import os
 
 import pandas as pd
 
-from nomograms import CapraNomogram, ClassificationOutcome, SurvivalOutcome
+from prostate_nomograms import CapraNomogram, ClassificationOutcome, SurvivalOutcome
 
 
 if __name__ == "__main__":
