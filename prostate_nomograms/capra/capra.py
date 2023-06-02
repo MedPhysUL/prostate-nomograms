@@ -1,6 +1,5 @@
 from typing import Optional, Union
 
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
@@ -350,15 +349,3 @@ class CapraNomogram:
             raise ValueError("Logistic models don't have risk predictions.")
         else:
             raise ValueError(f"Model type {self.model_type} doesn't exist.")
-
-    def show_histogram(self, dataframe: pd.DataFrame) -> None:
-        """
-        Shows the histogram of the CAPRA score.
-
-        Parameters
-        ----------
-        dataframe : pd.DataFrame
-            Dataframe containing the data of the patients.
-        """
-        plt.hist(self.get_capra_score(dataframe), bins=20)
-        plt.show()
