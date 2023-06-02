@@ -18,7 +18,21 @@ pip install prostate-nomograms
 pip install git+https://github.com/MaxenceLarose/prostate-cancer-nomograms
 ```
 
-## What is the purpose of this application?
+## Quick usage preview
+
+```python
+import pandas as pd
+
+from prostate_nomograms import MskccPreRadicalProstatectomyNomogram, ClassificationOutcome
+
+mskcc_nomogram = MskccPreRadicalProstatectomyNomogram(outcome=ClassificationOutcome.LYMPH_NODE_INVOLVEMENT)
+
+dataframe = pd.read_csv("data.csv")
+
+probability = mskcc_nomogram.predict_proba(dataframe)
+```
+
+## Motivation
 
 Nomograms are typically implemented as web-based applications in which a physician must fill in certain boxes using a patient's medical information. Once all the boxes are filled in, the prediction tool can either calculate the probability of several clinical outcomes or calculate a risk score associated with the patient's health status, depending on the type of nomogram. The **purpose** of this application is to speed up the process for a very large number of patients. Indeed, the statistical models of the nomograms are reproduced in Python which allows to calculate in a few seconds the probabilities and the scores of thousands of patients. The coefficients of the models are read from the web sites, then used for the calculations.
 
