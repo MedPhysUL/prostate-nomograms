@@ -39,11 +39,25 @@ Note that a custom nomogram is also implemented, i.e. a simple logistic regressi
 
 You can find examples [here](https://github.com/MaxenceLarose/ProstateCancerNomograms/tree/main/examples).
 
+## License
+
+This code is provided under the [Apache License 2.0](https://github.com/MaxenceLarose/delia/blob/main/LICENSE).
+
+## Citation
+
+```
+@misc{prostate-nomograms,
+  title={prostate-nomograms: Prediction tools based on existing prostate cancer nomograms},
+  author={Maxence Larose},
+  year={2022},
+  publisher={Université Laval},
+  url={https://github.com/MaxenceLarose/prostate-nomograms},
+}
+```
+
 ## Contact
 
 Maxence Larose, B. Ing., [maxence.larose.1@ulaval.ca](mailto:maxence.larose.1@ulaval.ca)
-
-
 
 [comment]: REFERENCES>
 [1]: <https://www.mskcc.org/nomograms/prostate> "MSKCC - Prostate Cancer Nomograms"
