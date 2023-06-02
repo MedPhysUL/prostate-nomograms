@@ -4,7 +4,7 @@ import os
 
 import pandas as pd
 
-from nomograms import MSKCCPreRadicalProstatectomyNomogram, ClassificationOutcome, SurvivalOutcome
+from nomograms import MskccPreRadicalProstatectomyNomogram, ClassificationOutcome, SurvivalOutcome
 
 
 if __name__ == "__main__":
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     #                                                   MSKCC                                                     #
     # ----------------------------------------------------------------------------------------------------------- #
     for outcome in OUTCOMES:
-        mskcc_nomogram = MSKCCPreRadicalProstatectomyNomogram(
+        mskcc_nomogram = MskccPreRadicalProstatectomyNomogram(
             outcome=outcome,
             age_column_name=AGE_COLUMN,
             psa_column_name=PSA_COLUMN,

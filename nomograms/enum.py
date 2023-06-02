@@ -1,11 +1,6 @@
 from enum import StrEnum
 
 
-class Nomograms(StrEnum):
-    MSKCC = "MSKCC"
-    CAPRA = "CAPRA"
-
-
 class ClassificationOutcome(StrEnum):
     EXTRACAPSULAR_EXTENSION = "Extracapsular Extension"
     EXTRACAPSULAR_EXTENSION_CORES = "Extracapsular Extension (Cores)"

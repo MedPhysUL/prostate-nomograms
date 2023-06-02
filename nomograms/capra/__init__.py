@@ -1,1 +1,1 @@
-from .capra import CAPRANomogram
+from .capra import CapraNomogram

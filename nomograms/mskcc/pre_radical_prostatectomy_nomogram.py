@@ -5,7 +5,7 @@ from .base import Model
 from ..enum import ClassificationOutcome, SurvivalOutcome
 
 
-class MSKCCPreRadicalProstatectomyNomogram(Model):
+class MskccPreRadicalProstatectomyNomogram(Model):
 
     def __init__(
             self,
