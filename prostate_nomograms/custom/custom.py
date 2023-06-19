@@ -15,16 +15,10 @@ class CustomNomogram:
     def __init__(
             self,
             outcome: Union[str, ClassificationOutcome, SurvivalOutcome],
+            features_column_names: List[str],
             target_column_name: Optional[str] = None,
             event_indicator_column_name: Optional[str] = None,
             event_time_column_name: Optional[str] = None,
-            age_column_name: str = "AGE",
-            psa_column_name: str = "PSA",
-            primary_gleason_column_name: str = "GLEASON_PRIMARY",
-            secondary_gleason_column_name: str = "GLEASON_SECONDARY",
-            global_gleason_column_name: str = "GLEASON_GLOBAL",
-            clinical_stage_column_name: str = "CLINICAL_STAGE",
-            positive_cores_percentage_column_name: Optional[str] = None,
             random_state: int = 0
     ):
         """
@@ -34,26 +28,14 @@ class CustomNomogram:
         ----------
         outcome : Optional[Union[str, Outcome]]
             Name of the outcome.
+        features_column_names : Optional[List[str]]
+            Names of the columns containing the features of the patients.
         target_column_name : Optional[str]
             Name of the column containing the target of the patients.
         event_indicator_column_name : Optional[str]
             Name of the column containing the event indicator of the patients.
         event_time_column_name : Optional[str]
             Name of the column containing the event time of the patients.
-        age_column_name : str
-            Name of the column containing the age of the patients.
-        psa_column_name : str
-            Name of the column containing the PSA of the patients.
-        primary_gleason_column_name : str
-            Name of the column containing the primary Gleason score of the patients.
-        secondary_gleason_column_name : str
-            Name of the column containing the secondary Gleason score of the patients.
-        global_gleason_column_name : str
-            Name of the column containing the global Gleason score of the patients.
-        clinical_stage_column_name : str
-            Name of the column containing the clinical stage of the patients.
-        positive_cores_percentage_column_name : str, optional
-            Name of the column containing the number of positive cores of the patients.
         random_state : int, optional
             Random state.
         """
@@ -67,13 +49,7 @@ class CustomNomogram:
         self.target_column_name = target_column_name
         self.event_indicator_column_name = event_indicator_column_name
         self.event_time_column_name = event_time_column_name
-        self.age_column_name = age_column_name
-        self.psa_column_name = psa_column_name
-        self.primary_gleason_column_name = primary_gleason_column_name
-        self.secondary_gleason_column_name = secondary_gleason_column_name
-        self.global_gleason_column_name = global_gleason_column_name
-        self.clinical_stage_column_name = clinical_stage_column_name
-        self.positive_cores_percentage_column_name = positive_cores_percentage_column_name
+        self.features_column_names = features_column_names
         self._is_fitted = False
 
         if self.model_type == "survival":
@@ -134,19 +110,7 @@ class CustomNomogram:
         columns : List[str]
             The columns of the model.
         """
-        columns = [
-            self.age_column_name,
-            self.psa_column_name,
-            self.primary_gleason_column_name,
-            self.secondary_gleason_column_name,
-            self.global_gleason_column_name,
-            self.clinical_stage_column_name
-        ]
-
-        if self.cores:
-            columns.append(self.positive_cores_percentage_column_name)
-
-        return columns
+        return self.features_column_names
 
     def get_features(self, dataframe: pd.DataFrame) -> np.ndarray:
         """

@@ -49,12 +49,14 @@ if __name__ == "__main__":
                 outcome=outcome,
                 event_indicator_column_name=col_name,
                 event_time_column_name=f"{col_name}_TIME",
-                age_column_name=AGE_COLUMN,
-                psa_column_name=PSA_COLUMN,
-                primary_gleason_column_name=GLEASON_PRIMARY_COLUMN,
-                secondary_gleason_column_name=GLEASON_SECONDARY_COLUMN,
-                global_gleason_column_name=GLEASON_GLOBAL_COLUMN,
-                clinical_stage_column_name=CLINICAL_STAGE_COLUMN
+                features_column_names=[
+                    AGE_COLUMN,
+                    PSA_COLUMN,
+                    GLEASON_PRIMARY_COLUMN,
+                    GLEASON_SECONDARY_COLUMN,
+                    GLEASON_GLOBAL_COLUMN,
+                    CLINICAL_STAGE_COLUMN
+                ]
             )
             custom_nomogram.fit(dataframe)
             dataframe[f"PREDICTED_{outcome.name}_RISK"] = custom_nomogram.predict_risk(dataframe)
@@ -62,7 +64,18 @@ if __name__ == "__main__":
                 column_name = f"PREDICTED_{outcome.name}_{number_of_months}MONTHS"
                 dataframe[column_name] = custom_nomogram.predict_proba(dataframe, number_of_months)
         else:
-            custom_nomogram = CustomNomogram(outcome=outcome,target_column_name=col_name)
+            custom_nomogram = CustomNomogram(
+                outcome=outcome,
+                target_column_name=col_name,
+                features_column_names=[
+                    AGE_COLUMN,
+                    PSA_COLUMN,
+                    GLEASON_PRIMARY_COLUMN,
+                    GLEASON_SECONDARY_COLUMN,
+                    GLEASON_GLOBAL_COLUMN,
+                    CLINICAL_STAGE_COLUMN
+                ]
+            )
             custom_nomogram.fit(dataframe)
             dataframe[f"PREDICTED_{outcome.name}"] = custom_nomogram.predict_proba(dataframe)
 
