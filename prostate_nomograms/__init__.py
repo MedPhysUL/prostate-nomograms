@@ -4,7 +4,7 @@ from .mskcc import MskccPreRadicalProstatectomyNomogram
 from .enum import ClassificationOutcome, SurvivalOutcome
 
 __author__ = "Maxence Larose"
-__version__ = "0.0.5"
+__version__ = "0.0.6"
 __copyright__ = "Copyright 2023, Maxence Larose"
 __credits__ = ["Maxence Larose"]
 __license__ = "Apache License 2.0"
