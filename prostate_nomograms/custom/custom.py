@@ -2,6 +2,7 @@ from typing import List, Optional, Union
 
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import StandardScaler
 
 from ..enum import ClassificationOutcome, SurvivalOutcome
 from .base import LogisticRegression, SurvivalRegression
@@ -50,7 +51,9 @@ class CustomNomogram:
         self.event_indicator_column_name = event_indicator_column_name
         self.event_time_column_name = event_time_column_name
         self.features_column_names = features_column_names
+
         self._is_fitted = False
+        self._scaler = StandardScaler()
 
         if self.model_type == "survival":
             assert self.event_indicator_column_name is not None, (
@@ -142,6 +145,7 @@ class CustomNomogram:
             Dataframe containing the data of the patients.
         """
         features = self.get_features(dataset)
+        features = self._scaler.fit_transform(features)
         if self.model_type == "survival":
             self.regressor.fit(
                 features,
@@ -179,6 +183,7 @@ class CustomNomogram:
         assert self._is_fitted, "Model must be fitted first."
 
         features = self.get_features(dataframe)
+        features = self._scaler.transform(features)
         if self.model_type == "survival":
             if number_of_months is None:
                 raise ValueError("Number of months must be given.")
@@ -208,6 +213,7 @@ class CustomNomogram:
         """
         if self.model_type == "survival":
             features = self.get_features(dataframe)
+            features = self._scaler.transform(features)
             return self.regressor.get_predicted_risk(features)
         elif self.model_type == "logistic":
             raise ValueError("Logistic models don't have risk predictions.")
