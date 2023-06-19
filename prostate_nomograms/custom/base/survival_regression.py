@@ -10,7 +10,7 @@ class SurvivalRegression:
         """
         Logistic regression.
         """
-        self.classifier = CoxnetSurvivalAnalysis(fit_baseline_model=True)
+        self.classifier = CoxnetSurvivalAnalysis(fit_baseline_model=True, max_iter=1_000_000)
 
     def fit(
             self,
